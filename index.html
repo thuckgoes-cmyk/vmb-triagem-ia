@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMB Advisory IA — Diagnóstico Preliminar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FC7E2F;
+      --dark:   #3C3935;
+      --bg:     #FAF8F5;
+      --white:  #FFFFFF;
+      --border: #E8E3DC;
+      --muted:  #8C8580;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 64px;
+    }
+
+    /* ── Header / Logo ─────────────────────────────────────── */
+    .header {
+      width: 100%;
+      max-width: 720px;
+      padding: 24px 0 32px;
+    }
+
+    .logo {
+      border-left: 4px solid var(--orange);
+      padding-left: 12px;
+      display: inline-block;
+    }
+
+    .logo-main {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.06em;
+      color: var(--dark);
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* ── Progress bar ──────────────────────────────────────── */
+    .progress-wrap {
+      width: 100%;
+      max-width: 720px;
+      margin-bottom: 28px;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 2px;
+      transition: width 0.35s ease;
+    }
+
+    /* ── Card ──────────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+    }
+
+    /* ── Screens ───────────────────────────────────────────── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Typography ────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      background: #FEF0E6;
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 30px;
+      line-height: 1.2;
+      color: var(--dark);
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 21px;
+      line-height: 1.3;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange);
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .section-intro {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      margin-top: 4px;
+    }
+
+    p { font-size: 15px; line-height: 1.7; color: #5C5854; margin-bottom: 12px; }
+
+    /* ── Form fields ───────────────────────────────────────── */
+    .form-group { margin-bottom: 20px; }
+
+    label.field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus { border-color: var(--orange); }
+
+    /* ── Question blocks ───────────────────────────────────── */
+    .question-block { margin-bottom: 0; }
+
+    .question-divider {
+      height: 1px;
+      background: var(--bg);
+      margin: 20px 0;
+    }
+
+    .question-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--dark);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 7px; }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 14px;
+      color: var(--dark);
+      user-select: none;
+    }
+
+    .option-label:hover { border-color: #CEC9C1; background: #FDFCFB; }
+
+    .option-label input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+
+    .option-label input[type="radio"]:checked {
+      border-color: var(--orange);
+      background: var(--orange);
+      box-shadow: inset 0 0 0 3px var(--white);
+    }
+
+    .option-label:has(input:checked) {
+      border-color: var(--orange);
+      background: #FEF6F0;
+    }
+
+    /* ── Buttons ───────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 46px;
+      padding: 0 26px;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary { background: var(--orange); color: var(--white); }
+    .btn-primary:hover:not(:disabled) { opacity: 0.87; }
+    .btn-primary:disabled { opacity: 0.38; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      margin-right: 12px;
+    }
+    .btn-ghost:hover { background: var(--bg); }
+
+    .nav-row {
+      display: flex;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Result screen ─────────────────────────────────────── */
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    .result-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 8px 10px 10px;
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .result-table td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--bg);
+      vertical-align: middle;
+    }
+
+    .result-table tr:last-child td { border-bottom: none; }
+
+    .degrau-badge {
+      display: inline-block;
+      background: #FEF0E6;
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .insight-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+
+    .insight-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .insight-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+
+    .insight-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .trilha-block {
+      border-left: 4px solid var(--orange);
+      padding: 16px 20px;
+      background: #FEF6F0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 24px;
+    }
+
+    .trilha-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .trilha-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--dark);
+    }
+
+    .closing-text {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.75;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-bottom: 8px;
+    }
+
+    .closing-text a { color: var(--orange); text-decoration: none; }
+    .closing-text a:hover { text-decoration: underline; }
+
+    .send-status { font-size: 13px; margin-top: 10px; min-height: 20px; }
+    .send-status.error   { color: #C0392B; }
+    .send-status.success { color: #1A7F4B; }
+
+    /* ── Footer note ───────────────────────────────────────── */
+    .privacy-note {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 32px;
+      max-width: 720px;
+      line-height: 1.6;
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .card { padding: 24px 20px; }
+      h1 { font-size: 24px; }
+      h2 { font-size: 18px; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .result-table th:last-child,
+      .result-table td:last-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo">
+      <div class="logo-main">VMB JURÍDICA</div>
+      <div class="logo-sub">Advisory IA</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-label" id="progressLabel"></div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- ─── TELA 0: Boas-vindas ─────────────────────────────── -->
+  <div class="screen active card" id="screen-0">
+    <span class="badge">Diagnóstico Preliminar</span>
+    <h1>VMB Advisory IA</h1>
+    <p>Este questionário é parte do processo de diagnóstico VMB Advisory IA. Ele cobre seis dimensões da adoção de inteligência artificial na sua empresa.</p>
+    <p>Não há respostas certas ou erradas — o objetivo é mapear onde vocês estão hoje.</p>
+    <p><strong>Tempo estimado: 8 a 10 minutos.</strong></p>
+    <p style="margin-top:8px; font-size:13px; color:var(--muted)">Suas respostas são confidenciais e serão utilizadas exclusivamente pela equipe VMB Jurídica para preparação da reunião de diagnóstico.</p>
+    <div style="margin-top:28px">
+      <button class="btn btn-primary" onclick="goTo(1)">Iniciar diagnóstico →</button>
+    </div>
+  </div>
+
+  <!-- ─── TELA 1: Dados do respondente ────────────────────── -->
+  <div class="screen card" id="screen-1">
+    <div class="section-label">Identificação</div>
+    <h2>Dados do respondente</h2>
+    <p class="section-intro">Preencha suas informações antes de iniciar o questionário.</p>
+
+    <div class="form-group">
+      <label class="field-label" for="f-nome">Nome completo *</label>
+      <input type="text" id="f-nome" placeholder="Ex.: Ana Souza" oninput="validateDados()">
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="f-cargo">Cargo *</label>
+      <input type="text" id="f-cargo" placeholder="Ex.: Diretor Jurídico" oninput="validateDados()">
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="f-empresa">Empresa *</label>
+      <input type="text" id="f-empresa" placeholder="Ex.: Empresa S.A." oninput="validateDados()">
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="f-email">E-mail corporativo *</label>
+      <input type="email" id="f-email" placeholder="Ex.: ana@empresa.com.br" oninput="validateDados()">
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(0)">← Voltar</button>
+      <button class="btn btn-primary" id="btn-dados" disabled onclick="saveDados()">Avançar →</button>
+    </div>
+  </div>
+
+  <!-- ─── TELAS 2–7: Dimensões (geradas por JS) ───────────── -->
+  <div id="dim-screens"></div>
+
+  <!-- ─── TELA 8: Resultado ────────────────────────────────── -->
+  <div class="screen card" id="screen-8">
+    <div class="section-label">Diagnóstico concluído</div>
+    <h2>Resultado da triagem</h2>
+    <p class="section-intro">Pontuação por dimensão com base nas suas respostas.</p>
+
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>Dimensão</th>
+          <th>Pontos</th>
+          <th>Degrau</th>
+          <th>Estágio</th>
+        </tr>
+      </thead>
+      <tbody id="result-tbody"></tbody>
+    </table>
+
+    <div class="insights-grid">
+      <div class="insight-block">
+        <div class="insight-label">Estágio predominante</div>
+        <div class="insight-value" id="res-predominante">—</div>
+        <div class="insight-sub" id="res-predominante-nome">—</div>
+      </div>
+      <div class="insight-block">
+        <div class="insight-label">Maior gap</div>
+        <div class="insight-value" id="res-gap">—</div>
+        <div class="insight-sub" id="res-gap-sub">—</div>
+      </div>
+    </div>
+
+    <div class="trilha-block">
+      <div class="trilha-label">Trilha recomendada</div>
+      <div class="trilha-value" id="res-trilha">—</div>
+    </div>
+
+    <div class="closing-text">
+      Questionário concluído.<br><br>
+      A equipe VMB analisará suas respostas antes da nossa primeira reunião. Isso nos permite chegar com uma leitura preliminar do perfil da sua empresa — e usar o tempo da reunião para aprofundar os pontos mais relevantes.<br><br>
+      Se tiver alguma dúvida antes da reunião, entre em contato diretamente com Pedro Abreu:
+      <a href="mailto:pedro@vmbjuridica.com">pedro@vmbjuridica.com</a>
+    </div>
+
+    <div class="nav-row" style="flex-direction:column; align-items:flex-start; gap:8px; border-top:none; padding-top:0; margin-top:20px">
+      <button class="btn btn-primary" id="btn-enviar" onclick="enviarEmail()">Enviar respostas para a VMB</button>
+      <div class="send-status" id="send-status"></div>
+    </div>
+  </div>
+
+  <p class="privacy-note">
+    Suas respostas são confidenciais e serão utilizadas exclusivamente pela equipe VMB Jurídica para preparação da reunião de diagnóstico. Não serão compartilhadas com terceiros.
+  </p>
+
+  <script>
+    // ─── EmailJS ──────────────────────────────────────────────
+    const EMAILJS_SERVICE_ID  = 'service_ab1svvu';
+    const EMAILJS_TEMPLATE_ID = 'template_yawpxtr';
+    const EMAILJS_PUBLIC_KEY  = 'dGtPCaLNYFKNEpYZM';
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    // ─── Lookup tables ────────────────────────────────────────
+    const ESTAGIO_NOMES = [
+      'INERTE',
+      'USO SOMBRA',
+      'EXPERIMENTAÇÃO ISOLADA',
+      'FORNECEDORES NA PORTA',
+      'IMPLANTAÇÃO EM CURSO',
+      'IA ESTRUTURADA'
+    ];
+
+    const TRILHAS = [
+      'Sensibilização & Política Básica',   // D0
+      'Sensibilização & Política Básica',   // D1
+      'Estruturação & Governança',          // D2
+      'Estruturação & Governança',          // D3
+      'Otimização & Compliance Avançado',   // D4
+      'Otimização & Compliance Avançado'    // D5
+    ];
+
+    const SCORE_PTS = { sim: 2, parcialmente: 1, nao: 0, naosei: 0 };
+
+    // ─── Dimensions & questions ───────────────────────────────
+    const DIMENSIONS = [
+      {
+        id: 1,
+        nome: 'Tecnologia & Ferramentas',
+        intro: 'Seção 1 de 6 — Ferramentas e sistemas de IA atualmente em uso na empresa.',
+        perguntas: [
+          'A empresa possui licença corporativa contratada de alguma ferramenta de IA? (ex: Microsoft 365 Copilot, Google Gemini, ChatGPT Enterprise, ou similar)',
+          'As ferramentas de IA estão integradas a sistemas internos da empresa (ERP, CRM, gestão documental)?',
+          'Existe alguma solução de IA desenvolvida ou customizada especificamente para a operação da empresa?',
+          'Há controle ou inventário das ferramentas de IA em uso nas diferentes áreas da empresa?'
+        ]
+      },
+      {
+        id: 2,
+        nome: 'Governança & Política',
+        intro: 'Seção 2 de 6 — Estrutura formal de decisão e responsabilização sobre uso de IA.',
+        perguntas: [
+          'Existe política escrita e aprovada sobre uso de IA na empresa?',
+          'Há um responsável formal pela pauta de IA (CIO, CTO, comitê específico, ou cargo equivalente)?',
+          'A política de uso de IA é comunicada e treinada com os funcionários?',
+          'Existe processo formal para aprovar a contratação de novas ferramentas de IA?'
+        ]
+      },
+      {
+        id: 3,
+        nome: 'Risco Jurídico & Compliance',
+        intro: 'Seção 3 de 6 — Mapeamento de exposição jurídica, LGPD e contratos.',
+        perguntas: [
+          'Os contratos com fornecedores de IA foram revisados pelo departamento jurídico com foco específico em IA (não apenas pela revisão jurídica padrão)?',
+          'A política de uso de IA aborda explicitamente quais dados pessoais podem ser inseridos nas ferramentas?',
+          'Foram revisadas as cláusulas de confidencialidade com clientes para verificar se o uso de IA pode representar violação?',
+          'Está definido quem é o responsável legal pelos outputs gerados por IA (decisões automatizadas, documentos, análises)?'
+        ]
+      },
+      {
+        id: 4,
+        nome: 'Pessoas & Cultura',
+        intro: 'Seção 4 de 6 — Engajamento da liderança, treinamento e cultura interna.',
+        perguntas: [
+          'A alta liderança (CEO, diretores) usa ativamente ferramentas de IA no trabalho?',
+          'A empresa realizou treinamento formal sobre uso de IA para os funcionários nos últimos 12 meses?',
+          'Existe um ou mais "champions" internos — pessoas que lideram e incentivam a adoção de IA na empresa?',
+          'O tema de IA está sendo discutido ativamente em reuniões de liderança ou planejamento estratégico?'
+        ]
+      },
+      {
+        id: 5,
+        nome: 'Estratégia & Demanda',
+        intro: 'Seção 5 de 6 — Posicionamento estratégico e origem da demanda por IA.',
+        perguntas: [
+          'A adoção de IA está incluída no planejamento estratégico formal da empresa (plano plurianual, OKRs, ou equivalente)?',
+          'Existe orçamento específico alocado para iniciativas de IA no ciclo atual?',
+          'A empresa sente pressão de concorrentes, clientes ou do conselho para avançar em IA?',
+          'Há clareza sobre quais processos ou áreas seriam prioritários para adoção de IA na empresa?'
+        ]
+      },
+      {
+        id: 6,
+        nome: 'Dados & Infraestrutura',
+        intro: 'Seção 6 de 6 — Qualidade e estrutura dos dados da empresa.',
+        perguntas: [
+          'A empresa possui inventário ou mapeamento dos principais dados que produz e armazena?',
+          'Os dados críticos da empresa estão estruturados e acessíveis (não dispersos em planilhas isoladas ou sistemas legados sem integração)?',
+          'Existe área ou responsável dedicado a dados, Business Intelligence ou analytics na empresa?',
+          'Os dados da empresa são classificados por nível de sensibilidade (dados pessoais, dados estratégicos, dados operacionais)?'
+        ]
+      }
+    ];
+
+    // ─── State ────────────────────────────────────────────────
+    const state = { dados: {} };
+    let currentScreen = 0;
+
+    // ─── Build dimension screens dynamically ──────────────────
+    const dimContainer = document.getElementById('dim-screens');
+
+    DIMENSIONS.forEach((dim, idx) => {
+      const screenNum = idx + 2; // screens 2..7
+      const isLast = idx === DIMENSIONS.length - 1;
+
+      let questionsHTML = '';
+      dim.perguntas.forEach((q, qi) => {
+        if (qi > 0) questionsHTML += '<div class="question-divider"></div>';
+        const radioName = `d${dim.id}_q${qi + 1}`;
+        const opts = [
+          { value: 'sim',          label: 'Sim' },
+          { value: 'parcialmente', label: 'Parcialmente / Em andamento' },
+          { value: 'nao',          label: 'Não' },
+          { value: 'naosei',       label: 'Não sei / Não tenho essa informação' }
+        ].map(o =>
+          `<label class="option-label">
+            <input type="radio" name="${radioName}" value="${o.value}" onchange="onOptionChange(${screenNum})">
+            ${o.label}
+          </label>`
+        ).join('');
+
+        questionsHTML += `
+          <div class="question-block">
+            <div class="question-text">${qi + 1}. ${q}</div>
+            <div class="options">${opts}</div>
+          </div>`;
+      });
+
+      const nextLabel = isLast ? 'Ver resultado →' : 'Avançar →';
+      const nextTarget = isLast ? 8 : screenNum + 1;
+
+      const div = document.createElement('div');
+      div.className = 'screen card';
+      div.id = `screen-${screenNum}`;
+      div.innerHTML = `
+        <div class="section-label">Dimensão ${dim.id} de 6</div>
+        <h2>${dim.nome}</h2>
+        <p class="section-intro">${dim.intro}</p>
+        ${questionsHTML}
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goTo(${screenNum - 1})">← Voltar</button>
+          <button class="btn btn-primary" id="btn-dim-${screenNum}" disabled onclick="goTo(${nextTarget})">${nextLabel}</button>
+        </div>`;
+      dimContainer.appendChild(div);
+    });
+
+    // ─── Navigation ───────────────────────────────────────────
+    function goTo(n) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`screen-${n}`).classList.add('active');
+      currentScreen = n;
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (n === 8) renderResult();
+    }
+
+    function updateProgress() {
+      const wrap = document.getElementById('progressWrap');
+      if (currentScreen === 0) { wrap.style.display = 'none'; return; }
+      wrap.style.display = 'block';
+      const step = currentScreen;   // 1..8
+      const total = 8;
+      document.getElementById('progressLabel').textContent = `Etapa ${step} de ${total}`;
+      document.getElementById('progressFill').style.width = `${(step / total) * 100}%`;
+    }
+
+    // ─── Dados validation ─────────────────────────────────────
+    function validateDados() {
+      const filled = ['f-nome', 'f-cargo', 'f-empresa', 'f-email']
+        .every(id => document.getElementById(id).value.trim() !== '');
+      document.getElementById('btn-dados').disabled = !filled;
+    }
+
+    function saveDados() {
+      state.dados = {
+        nome:    document.getElementById('f-nome').value.trim(),
+        cargo:   document.getElementById('f-cargo').value.trim(),
+        empresa: document.getElementById('f-empresa').value.trim(),
+        email:   document.getElementById('f-email').value.trim()
+      };
+      goTo(2);
+    }
+
+    // ─── Dimension validation ─────────────────────────────────
+    function onOptionChange(screenNum) {
+      const dimId = screenNum - 1; // screen 2 → dim 1, …, screen 7 → dim 6
+      const dim = DIMENSIONS[dimId - 1];
+      const allAnswered = dim.perguntas.every((_, qi) =>
+        document.querySelector(`input[name="d${dimId}_q${qi + 1}"]:checked`)
+      );
+      document.getElementById(`btn-dim-${screenNum}`).disabled = !allAnswered;
+    }
+
+    // ─── Scoring ──────────────────────────────────────────────
+    function getDegrau(pts) {
+      if (pts <= 1) return { d: 'D0', estagio: ESTAGIO_NOMES[0] };
+      if (pts <= 3) return { d: 'D1', estagio: ESTAGIO_NOMES[1] };
+      if (pts <= 5) return { d: 'D2', estagio: ESTAGIO_NOMES[2] };
+      if (pts === 6) return { d: 'D3', estagio: ESTAGIO_NOMES[3] };
+      if (pts === 7) return { d: 'D4', estagio: ESTAGIO_NOMES[4] };
+      return              { d: 'D5', estagio: ESTAGIO_NOMES[5] };
+    }
+
+    function calcScores() {
+      return DIMENSIONS.map(dim => {
+        let pts = 0;
+        dim.perguntas.forEach((_, qi) => {
+          const el = document.querySelector(`input[name="d${dim.id}_q${qi + 1}"]:checked`);
+          if (el) pts += (SCORE_PTS[el.value] || 0);
+        });
+        const { d, estagio } = getDegrau(pts);
+        return { id: dim.id, nome: dim.nome, pts, d, estagio };
+      });
+    }
+
+    // ─── Result rendering ─────────────────────────────────────
+    function renderResult() {
+      // Reset send button state when result is (re)rendered
+      const btnEnviar = document.getElementById('btn-enviar');
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Enviar respostas para a VMB';
+      document.getElementById('send-status').textContent = '';
+      document.getElementById('send-status').className = 'send-status';
+
+      const scores = calcScores();
+
+      // Table
+      document.getElementById('result-tbody').innerHTML = scores.map(s =>
+        `<tr>
+          <td><strong>${s.nome}</strong></td>
+          <td>${s.pts}/8</td>
+          <td><span class="degrau-badge">${s.d}</span></td>
+          <td>${s.estagio}</td>
+        </tr>`
+      ).join('');
+
+      // Predominant stage: most frequent D-number; lowest wins tie
+      const dNums = scores.map(s => parseInt(s.d[1]));
+      const freq = {};
+      dNums.forEach(n => { freq[n] = (freq[n] || 0) + 1; });
+      const maxFreq = Math.max(...Object.values(freq));
+      const predominantNum = Math.min(
+        ...Object.keys(freq).filter(k => freq[k] === maxFreq).map(Number)
+      );
+      document.getElementById('res-predominante').textContent = 'D' + predominantNum;
+      document.getElementById('res-predominante-nome').textContent = ESTAGIO_NOMES[predominantNum];
+
+      // Biggest gap: dimension with lowest score
+      const gap = scores.reduce((min, s) => s.pts < min.pts ? s : min, scores[0]);
+      document.getElementById('res-gap').textContent = gap.nome;
+      document.getElementById('res-gap-sub').textContent = gap.d + ' — ' + gap.estagio;
+
+      // Recommended track
+      document.getElementById('res-trilha').textContent = TRILHAS[predominantNum];
+    }
+
+    // ─── Email sending ────────────────────────────────────────
+    function enviarEmail() {
+      const btn    = document.getElementById('btn-enviar');
+      const status = document.getElementById('send-status');
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+      status.textContent = '';
+      status.className = 'send-status';
+
+      const scores = calcScores();
+      const dNums  = scores.map(s => parseInt(s.d[1]));
+      const freq   = {};
+      dNums.forEach(n => { freq[n] = (freq[n] || 0) + 1; });
+      const maxFreq = Math.max(...Object.values(freq));
+      const predominantNum = Math.min(
+        ...Object.keys(freq).filter(k => freq[k] === maxFreq).map(Number)
+      );
+      const gap = scores.reduce((min, s) => s.pts < min.pts ? s : min, scores[0]);
+
+      const params = {
+        nome:               state.dados.nome,
+        cargo:              state.dados.cargo,
+        empresa:            state.dados.empresa,
+        email_respondente:  state.dados.email,
+
+        dim1_nome: scores[0].nome, dim1_pts: scores[0].pts, dim1_degrau: scores[0].d, dim1_estagio: scores[0].estagio,
+        dim2_nome: scores[1].nome, dim2_pts: scores[1].pts, dim2_degrau: scores[1].d, dim2_estagio: scores[1].estagio,
+        dim3_nome: scores[2].nome, dim3_pts: scores[2].pts, dim3_degrau: scores[2].d, dim3_estagio: scores[2].estagio,
+        dim4_nome: scores[3].nome, dim4_pts: scores[3].pts, dim4_degrau: scores[3].d, dim4_estagio: scores[3].estagio,
+        dim5_nome: scores[4].nome, dim5_pts: scores[4].pts, dim5_degrau: scores[4].d, dim5_estagio: scores[4].estagio,
+        dim6_nome: scores[5].nome, dim6_pts: scores[5].pts, dim6_degrau: scores[5].d, dim6_estagio: scores[5].estagio,
+
+        estagio_predominante: 'D' + predominantNum + ' — ' + ESTAGIO_NOMES[predominantNum],
+        maior_gap:            gap.nome + ' (' + gap.d + ')',
+        trilha_recomendada:   TRILHAS[predominantNum]
+      };
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+        .then(() => {
+          btn.textContent = 'Enviado ✓';
+          status.textContent = 'Respostas enviadas com sucesso para a equipe VMB.';
+          status.className = 'send-status success';
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.textContent = 'Enviar respostas para a VMB';
+          status.textContent = 'Erro ao enviar. Verifique sua conexão e tente novamente.';
+          status.className = 'send-status error';
+          console.error('EmailJS error:', err);
+        });
+    }
+  </script>
+</body>
+</html>
