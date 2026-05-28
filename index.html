@@ -405,13 +405,45 @@
     }
 
     /* ── Responsive ────────────────────────────────────────── */
-    @media (max-width: 520px) {
-      .card { padding: 24px 20px; }
-      h1 { font-size: 24px; }
-      h2 { font-size: 18px; }
-      .insights-grid { grid-template-columns: 1fr; }
-      .result-table th:last-child,
-      .result-table td:last-child { display: none; }
+    @media (max-width: 600px) {
+      /* Layout */
+      body          { padding: 16px 16px 64px; }
+      .header       { padding: 16px 0 20px; }
+      .card         { padding: 24px 16px; border-radius: 10px; }
+      .progress-wrap { margin-bottom: 20px; }
+
+      /* Typography */
+      h1            { font-size: 24px; }
+      h2            { font-size: 19px; }
+      .question-text { font-size: 16px; }
+      .section-intro { font-size: 14px; }
+      p             { font-size: 15px; }
+
+      /* Inputs */
+      input[type="text"],
+      input[type="email"] {
+        height: 48px;
+        font-size: 16px; /* prevents iOS auto-zoom */
+      }
+
+      /* Options — already column, ensure touch target */
+      .option-label {
+        min-height: 48px;
+        padding: 12px 14px;
+        font-size: 15px;
+      }
+
+      /* Buttons — full width, stacked */
+      .btn {
+        width: 100%;
+        height: 48px;
+        font-size: 16px;
+      }
+      .btn-ghost    { margin-right: 0; }
+      .nav-row {
+        flex-direction: column-reverse;
+        gap: 10px;
+      }
     }
   </style>
 </head>
