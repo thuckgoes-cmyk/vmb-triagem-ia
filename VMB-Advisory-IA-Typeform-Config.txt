@@ -1,0 +1,185 @@
+VMB ADVISORY IA — CONFIGURAÇÃO TYPEFORM
+Questionário de Triagem de Prospect
+====================================
+
+URL sugerida: vmb.typeform.com/triagem-ia (ou via domínio próprio)
+
+CONFIGURAÇÕES GERAIS
+--------------------
+Título público: "VMB Advisory IA — Diagnóstico Preliminar"
+Subtítulo: "Responda em 8 minutos. Suas respostas ficam restritas à equipe VMB."
+Botão de início: "Iniciar diagnóstico"
+Cor de destaque: #FC7E2F (laranja VMB)
+Fonte: sem serifa (Inter ou equivalente)
+Logo: VMB Jurídica
+Tela final: "Obrigado. A equipe VMB analisará suas respostas antes da nossa reunião."
+
+ESCALA DE RESPOSTA (criar como Choice question em todas)
+-----------------
+Opções padrão para todas as perguntas:
+[ ] Sim
+[ ] Parcialmente / Em andamento
+[ ] Não
+[ ] Não sei / Não tenho essa informação
+
+PONTUAÇÃO (configurar via Hidden fields + Score ou Webhooks)
+Sim = 2 pontos
+Parcialmente = 1 ponto
+Não = 0 pontos
+Não sei = 0 pontos
+
+TELA DE ABERTURA
+----------------
+Bloco Welcome:
+"Este questionário é parte do processo de diagnóstico VMB Advisory IA.
+Ele cobre seis dimensões da adoção de inteligência artificial na sua empresa.
+Não há respostas certas ou erradas — o objetivo é mapear onde vocês estão hoje.
+Tempo estimado: 8 a 10 minutos."
+
+Campo obrigatório antes de iniciar:
+- Nome completo *
+- Cargo *
+- Empresa *
+- E-mail corporativo *
+- Telefone (opcional)
+
+====================================
+SEÇÃO 1 — TECNOLOGIA & FERRAMENTAS
+====================================
+Texto introdutório (Statement block):
+"Seção 1 de 6 — Ferramentas e sistemas de IA atualmente em uso na empresa."
+
+P1. A empresa possui licença corporativa contratada de alguma ferramenta de IA? (ex: Microsoft 365 Copilot, Google Gemini, ChatGPT Enterprise, ou similar)
+
+P2. As ferramentas de IA estão integradas a sistemas internos da empresa (ERP, CRM, gestão documental)?
+
+P3. Existe alguma solução de IA desenvolvida ou customizada especificamente para a operação da empresa?
+
+P4. Há controle ou inventário das ferramentas de IA em uso nas diferentes áreas da empresa?
+
+PONTUAÇÃO SEÇÃO 1: somar respostas (máx. 8 pontos)
+D0 = 0-1 | D1 = 2-3 | D2 = 4-5 | D3 = 6 | D4-D5 = 7-8
+
+====================================
+SEÇÃO 2 — GOVERNANÇA & POLÍTICA
+====================================
+Texto introdutório:
+"Seção 2 de 6 — Estrutura formal de decisão e responsabilização sobre uso de IA."
+
+P5. Existe política escrita e aprovada sobre uso de IA na empresa?
+
+P6. Há um responsável formal pela pauta de IA (CIO, CTO, comitê específico, ou cargo equivalente)?
+
+P7. A política de uso de IA é comunicada e treinada com os funcionários?
+
+P8. Existe processo formal para aprovar a contratação de novas ferramentas de IA?
+
+PONTUAÇÃO SEÇÃO 2: somar respostas (máx. 8 pontos)
+D0 = 0-1 | D1 = 2-3 | D2 = 4-5 | D3 = 6 | D4-D5 = 7-8
+
+====================================
+SEÇÃO 3 — RISCO JURÍDICO & COMPLIANCE
+====================================
+Texto introdutório:
+"Seção 3 de 6 — Mapeamento de exposição jurídica, LGPD e contratos."
+
+P9. Os contratos com fornecedores de IA foram revisados pelo departamento jurídico com foco específico em IA (não apenas pela revisão jurídica padrão)?
+
+P10. A política de uso de IA aborda explicitamente quais dados pessoais podem ser inseridos nas ferramentas?
+
+P11. Foram revisadas as cláusulas de confidencialidade com clientes para verificar se o uso de IA pode representar violação?
+
+P12. Está definido quem é o responsável legal pelos outputs gerados por IA (decisões automatizadas, documentos, análises)?
+
+PONTUAÇÃO SEÇÃO 3: somar respostas (máx. 8 pontos)
+D0 = 0-1 | D1 = 2-3 | D2 = 4-5 | D3 = 6 | D4-D5 = 7-8
+
+====================================
+SEÇÃO 4 — PESSOAS & CULTURA
+====================================
+Texto introdutório:
+"Seção 4 de 6 — Engajamento da liderança, treinamento e cultura interna."
+
+P13. A alta liderança (CEO, diretores) usa ativamente ferramentas de IA no trabalho?
+
+P14. A empresa realizou treinamento formal sobre uso de IA para os funcionários nos últimos 12 meses?
+
+P15. Existe um ou mais "champions" internos — pessoas que lideram e incentivam a adoção de IA na empresa?
+
+P16. O tema de IA está sendo discutido ativamente em reuniões de liderança ou planejamento estratégico?
+
+PONTUAÇÃO SEÇÃO 4: somar respostas (máx. 8 pontos)
+D0 = 0-1 | D1 = 2-3 | D2 = 4-5 | D3 = 6 | D4-D5 = 7-8
+
+====================================
+SEÇÃO 5 — ESTRATÉGIA & DEMANDA
+====================================
+Texto introdutório:
+"Seção 5 de 6 — Posicionamento estratégico e origem da demanda por IA."
+
+P17. A adoção de IA está incluída no planejamento estratégico formal da empresa (plano plurianual, OKRs, ou equivalente)?
+
+P18. Existe orçamento específico alocado para iniciativas de IA no ciclo atual?
+
+P19. A empresa sente pressão de concorrentes, clientes ou do conselho para avançar em IA?
+
+P20. Há clareza sobre quais processos ou áreas seriam prioritários para adoção de IA na empresa?
+
+PONTUAÇÃO SEÇÃO 5: somar respostas (máx. 8 pontos)
+D0 = 0-1 | D1 = 2-3 | D2 = 4-5 | D3 = 6 | D4-D5 = 7-8
+
+====================================
+SEÇÃO 6 — DADOS & INFRAESTRUTURA
+====================================
+Texto introdutório:
+"Seção 6 de 6 — Qualidade e estrutura dos dados da empresa."
+
+P21. A empresa possui inventário ou mapeamento dos principais dados que produz e armazena?
+
+P22. Os dados críticos da empresa estão estruturados e acessíveis (não dispersos em planilhas isoladas ou sistemas legados sem integração)?
+
+P23. Existe área ou responsável dedicado a dados, Business Intelligence ou analytics na empresa?
+
+P24. Os dados da empresa são classificados por nível de sensibilidade (dados pessoais, dados estratégicos, dados operacionais)?
+
+PONTUAÇÃO SEÇÃO 6: somar respostas (máx. 8 pontos)
+D0 = 0-1 | D1 = 2-3 | D2 = 4-5 | D3 = 6 | D4-D5 = 7-8
+
+====================================
+TELA FINAL
+====================================
+Statement block:
+"Questionário concluído.
+
+A equipe VMB analisará suas respostas antes da nossa primeira reunião.
+Isso nos permite chegar com uma leitura preliminar do perfil da sua empresa —
+e usar o tempo da reunião para aprofundar os pontos mais relevantes.
+
+Se tiver alguma dúvida antes da reunião, entre em contato diretamente com
+Pedro Abreu: [email] | [telefone]"
+
+====================================
+CONFIGURAÇÃO DE NOTIFICAÇÕES
+====================================
+Ao receber resposta, enviar e-mail automático para:
+- pedro@vmb.adv.br (ou endereço real)
+- caio@vmb.adv.br (ou endereço real)
+
+Corpo do e-mail automático (Typeform Notifications):
+Assunto: "VMB Triagem — [Nome da Empresa] ([Nome do Respondente])"
+Corpo: incluir todas as respostas + pontuação por seção
+
+====================================
+INTEGRAÇÃO SUGERIDA
+====================================
+Typeform → Google Sheets (via Zapier ou integração nativa)
+Planilha recebe: data, empresa, cargo, pontuação por seção, degrau indicativo por seção
+Isso cria histórico automático de todos os prospects triados.
+
+====================================
+NOTA SOBRE PRIVACIDADE
+====================================
+Adicionar no rodapé do formulário:
+"Suas respostas são confidenciais e serão utilizadas exclusivamente
+pela equipe VMB Jurídica para preparação da reunião de diagnóstico.
+Não serão compartilhadas com terceiros."
