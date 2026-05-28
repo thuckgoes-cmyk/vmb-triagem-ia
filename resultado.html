@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMB Advisory IA — Diagnóstico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FC7E2F;
+      --dark:   #3C3935;
+      --bg:     #FAF8F5;
+      --white:  #FFFFFF;
+      --border: #E8E3DC;
+      --muted:  #8C8580;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      padding: 0 0 64px;
+    }
+
+    /* ── Header ────────────────────────────────────────────── */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      border-left: 4px solid var(--orange);
+      padding-left: 12px;
+    }
+
+    .logo-main {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: 0.06em;
+      color: var(--dark);
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .header-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    /* ── Main layout ───────────────────────────────────────── */
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 24px 0;
+    }
+
+    /* ── Section card ──────────────────────────────────────── */
+    .section-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Respondent info ───────────────────────────────────── */
+    .respondent-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .info-field { }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .info-value.empresa {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    /* ── Dimension cards ───────────────────────────────────── */
+    .dim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .dim-card {
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid transparent;
+    }
+
+    .dim-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+
+    .dim-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+
+    .dim-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .degrau-badge {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .score-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .dim-estagio {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Degrau color schemes */
+    .d0 { background: #F5F4F2; border-color: #E0DBD4; }
+    .d0 .degrau-badge { background: #E0DBD4; color: #6B6561; }
+    .d0 .progress-fill { background: #8C8580; }
+    .d0 .dim-estagio { color: #6B6561; }
+
+    .d1, .d2, .d3 { background: #FEF6F0; border-color: #FDDFC8; }
+    .d1 .degrau-badge, .d2 .degrau-badge, .d3 .degrau-badge { background: #FEE0C8; color: #B85A18; }
+    .d1 .progress-fill, .d2 .progress-fill, .d3 .progress-fill { background: var(--orange); }
+    .d1 .dim-estagio, .d2 .dim-estagio, .d3 .dim-estagio { color: #B85A18; }
+
+    .d4 { background: #FEF0EE; border-color: #FAD0CB; }
+    .d4 .degrau-badge { background: #FAD0CB; color: #A02820; }
+    .d4 .progress-fill { background: #D93025; }
+    .d4 .dim-estagio { color: #A02820; }
+
+    .d5 { background: #EDF7F2; border-color: #B8E8CD; }
+    .d5 .degrau-badge { background: #B8E8CD; color: #0F5C32; }
+    .d5 .progress-fill { background: #1A7F4B; }
+    .d5 .dim-estagio { color: #0F5C32; }
+
+    /* ── Synthesis ─────────────────────────────────────────── */
+    .synthesis-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .synth-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+
+    .synth-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .synth-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+
+    .synth-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .trilha-block {
+      border-left: 4px solid var(--orange);
+      padding: 16px 20px;
+      background: #FEF6F0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .trilha-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .trilha-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--dark);
+    }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    .footer {
+      max-width: 800px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-logo {
+      border-left: 3px solid var(--orange);
+      padding-left: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--dark);
+    }
+
+    /* ── Error state ───────────────────────────────────────── */
+    .error-wrap {
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .error-wrap h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .error-wrap p { font-size: 14px; color: var(--muted); }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .dim-grid { grid-template-columns: 1fr; }
+      .synthesis-grid { grid-template-columns: 1fr 1fr; }
+      .respondent-grid { grid-template-columns: 1fr; }
+      .section-card { padding: 24px 20px; }
+    }
+
+    @media (max-width: 400px) {
+      .synthesis-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-main">VMB JURÍDICA</div>
+        <div class="logo-sub">Advisory IA</div>
+      </div>
+      <span class="header-badge">Diagnóstico Interno</span>
+    </div>
+  </header>
+
+  <main class="main" id="main">
+    <div class="error-wrap">
+      <h2>Carregando diagnóstico…</h2>
+      <p>Aguarde um instante.</p>
+    </div>
+  </main>
+
+  <footer class="footer" id="footer" style="display:none">
+    <div class="footer-logo">VMB JURÍDICA</div>
+    <span>Documento confidencial — uso interno equipe VMB</span>
+  </footer>
+
+  <script>
+    function dClass(d) {
+      return 'd' + d[1];
+    }
+
+    function render(data) {
+      const main = document.getElementById('main');
+
+      // ── Respondent ──────────────────────────────────────────
+      const respondentHTML = `
+        <div class="section-card">
+          <div class="section-title">Dados do respondente</div>
+          <div class="respondent-grid">
+            <div class="info-field" style="grid-column:1/-1">
+              <div class="info-label">Empresa</div>
+              <div class="info-value empresa">${esc(data.empresa)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">Nome</div>
+              <div class="info-value">${esc(data.nome)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">Cargo</div>
+              <div class="info-value">${esc(data.cargo)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">E-mail</div>
+              <div class="info-value">${esc(data.email)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">Data do envio</div>
+              <div class="info-value">${esc(data.dt)}</div>
+            </div>
+          </div>
+        </div>`;
+
+      // ── Dimensions ──────────────────────────────────────────
+      const dimsHTML = data.scores.map(s => {
+        const pct = Math.round((s.pts / 8) * 100);
+        const cls = dClass(s.d);
+        return `
+          <div class="dim-card ${cls}">
+            <div class="dim-card-header">
+              <div class="dim-name">${esc(s.nome)}</div>
+              <div class="dim-badges">
+                <span class="score-badge">${s.pts}/8</span>
+                <span class="degrau-badge">${esc(s.d)}</span>
+              </div>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${pct}%"></div>
+            </div>
+            <div class="dim-estagio">${esc(s.estagio)}</div>
+          </div>`;
+      }).join('');
+
+      const dimensionsHTML = `
+        <div class="section-card">
+          <div class="section-title">Resultado por dimensão</div>
+          <div class="dim-grid">${dimsHTML}</div>
+        </div>`;
+
+      // ── Synthesis ───────────────────────────────────────────
+      const predominanteParts = data.predominante.split(' — ');
+      const gapParts = data.gap.match(/^(.+?)\s*\(([^)]+)\)$/) || [, data.gap, ''];
+
+      const synthesisHTML = `
+        <div class="section-card">
+          <div class="section-title">Síntese executiva</div>
+          <div class="synthesis-grid">
+            <div class="synth-block">
+              <div class="synth-label">Estágio predominante</div>
+              <div class="synth-value">${esc(predominanteParts[0] || data.predominante)}</div>
+              <div class="synth-sub">${esc(predominanteParts[1] || '')}</div>
+            </div>
+            <div class="synth-block">
+              <div class="synth-label">Maior gap</div>
+              <div class="synth-value">${esc(gapParts[2] || '')}</div>
+              <div class="synth-sub">${esc(gapParts[1] || data.gap)}</div>
+            </div>
+            <div class="synth-block">
+              <div class="synth-label">Pontuação global</div>
+              <div class="synth-value">${data.score_total}/48</div>
+              <div class="synth-sub">${Math.round((data.score_total / 48) * 100)}% do potencial máximo</div>
+            </div>
+          </div>
+          <div class="trilha-block">
+            <div class="trilha-label">Trilha recomendada</div>
+            <div class="trilha-value">${esc(data.trilha)}</div>
+          </div>
+        </div>`;
+
+      main.innerHTML = respondentHTML + dimensionsHTML + synthesisHTML;
+      document.getElementById('footer').style.display = 'flex';
+    }
+
+    function esc(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function init() {
+      const param = new URLSearchParams(window.location.search).get('d');
+      if (!param) {
+        document.getElementById('main').innerHTML = `
+          <div class="error-wrap">
+            <h2>Link inválido</h2>
+            <p>Este link não contém dados de diagnóstico. Verifique o e-mail recebido.</p>
+          </div>`;
+        return;
+      }
+      try {
+        const data = JSON.parse(decodeURIComponent(escape(atob(param))));
+        render(data);
+      } catch (e) {
+        document.getElementById('main').innerHTML = `
+          <div class="error-wrap">
+            <h2>Erro ao carregar diagnóstico</h2>
+            <p>Os dados do link estão corrompidos ou incompletos.</p>
+          </div>`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

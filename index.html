@@ -749,6 +749,22 @@
 
       const scoreTotal = scores.reduce((sum, s) => sum + s.pts, 0);
 
+      // Build diagnostic URL (data encoded as base64 JSON)
+      const diagData = {
+        nome:    state.dados.nome,
+        cargo:   state.dados.cargo,
+        empresa: state.dados.empresa,
+        email:   state.dados.email,
+        dt:      new Date().toLocaleString('pt-BR'),
+        scores:  scores.map(s => ({ id: s.id, nome: s.nome, pts: s.pts, d: s.d, estagio: s.estagio })),
+        predominante: 'D' + predominantNum + ' — ' + ESTAGIO_NOMES[predominantNum],
+        gap:     gap.nome + ' (' + gap.d + ')',
+        trilha:  TRILHAS[predominantNum],
+        score_total: scoreTotal
+      };
+      const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(diagData))));
+      const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/resultado.html?d=${encoded}`;
+
       const params = {
         nome:    state.dados.nome,
         cargo:   state.dados.cargo,
@@ -765,14 +781,22 @@
         predominante: 'D' + predominantNum + ' — ' + ESTAGIO_NOMES[predominantNum],
         gap:          gap.nome + ' (' + gap.d + ')',
         trilha:       TRILHAS[predominantNum],
-        score_total:  scoreTotal
+        score_total:  scoreTotal,
+        link_diagnostico: linkDiagnostico
       };
 
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
         .then(() => {
-          btn.textContent = 'Enviado ✓';
-          status.textContent = 'Respostas enviadas com sucesso para a equipe VMB.';
-          status.className = 'send-status success';
+          document.getElementById('screen-8').innerHTML = `
+            <div style="text-align:center;padding:32px 0 16px">
+              <div style="width:72px;height:72px;border-radius:50%;background:#FEF0E6;display:inline-flex;align-items:center;justify-content:center;margin-bottom:28px">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 13l4 4L19 7" stroke="#FC7E2F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#3C3935;margin-bottom:14px">Respostas enviadas com sucesso</h2>
+              <p style="font-size:15px;color:#5C5854;line-height:1.75;max-width:420px;margin:0 auto">A equipe VMB Jurídica recebeu seu diagnóstico e entrará em contato em breve.</p>
+            </div>`;
         })
         .catch(err => {
           btn.disabled = false;
