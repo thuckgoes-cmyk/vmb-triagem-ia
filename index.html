@@ -463,8 +463,37 @@
     </div>
   </div>
 
+  <!-- ─── TELA LOGIN ──────────────────────────────────────── -->
+  <div class="screen active card" id="screen-login">
+    <div class="logo" style="margin-bottom:28px">
+      <img src="Logo.jpg" alt="VMB Jurídica" style="height:38px;width:auto;display:block;">
+      <div class="logo-sub">Advisory IA</div>
+    </div>
+    <div class="section-label">VMB Advisory IA</div>
+    <h2>Acesso Restrito</h2>
+    <p class="section-intro">Este questionário é de uso exclusivo do destinatário autorizado pela VMB Jurídica.</p>
+
+    <div class="form-group">
+      <label class="field-label" for="l-usuario">Usuário</label>
+      <input type="text" id="l-usuario" autocomplete="username" oninput="clearLoginError()">
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="l-senha">Senha</label>
+      <input type="password" id="l-senha" autocomplete="current-password"
+             oninput="clearLoginError()"
+             onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+
+    <div id="login-error" style="display:none;font-size:13px;color:#C0392B;margin-bottom:16px;line-height:1.5;">
+      Acesso não autorizado. Entre em contato com
+      <a href="mailto:pedro@vmbjuridica.com" style="color:#C0392B">pedro@vmbjuridica.com</a>
+    </div>
+
+    <button class="btn btn-primary" onclick="doLogin()" style="width:100%">ACESSAR</button>
+  </div>
+
   <!-- ─── TELA 0: Boas-vindas ─────────────────────────────── -->
-  <div class="screen active card" id="screen-0">
+  <div class="screen card" id="screen-0">
     <span class="badge">Diagnóstico Preliminar</span>
     <h1>VMB Advisory IA</h1>
     <p>Este questionário é parte do processo de diagnóstico VMB Advisory IA. Ele cobre seis dimensões da adoção de inteligência artificial na sua empresa.</p>
@@ -554,6 +583,19 @@
     ];
 
     const SCORE_PTS = { sim: 2, parcialmente: 1, nao: 0, naosei: 0 };
+
+    // ─── Credenciais de acesso ────────────────────────────────
+    const USUARIOS = {
+      "nortesan": "vmb2026",
+      "cliente2": "vmb2026",
+      "cliente3": "vmb2026"
+    };
+
+    const EMPRESA_NOMES = {
+      "nortesan": "Norte Saneamento",
+      "cliente2": "Cliente 2",
+      "cliente3": "Cliente 3"
+    };
 
     // ─── Dimensions & questions ───────────────────────────────
     const DIMENSIONS = [
@@ -677,6 +719,22 @@
       dimContainer.appendChild(div);
     });
 
+    // ─── Login ────────────────────────────────────────────────
+    function doLogin() {
+      const usuario = document.getElementById('l-usuario').value.trim().toLowerCase();
+      const senha   = document.getElementById('l-senha').value;
+      if (USUARIOS[usuario] && USUARIOS[usuario] === senha) {
+        state.empresa_login = EMPRESA_NOMES[usuario] || usuario;
+        goTo(0);
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    function clearLoginError() {
+      document.getElementById('login-error').style.display = 'none';
+    }
+
     // ─── Navigation ───────────────────────────────────────────
     function goTo(n) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -684,6 +742,10 @@
       currentScreen = n;
       updateProgress();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (n === 1 && state.empresa_login) {
+        const el = document.getElementById('f-empresa');
+        if (el && !el.value) { el.value = state.empresa_login; validateDados(); }
+      }
       if (n === 8) renderResult();
     }
 
@@ -827,7 +889,14 @@
                 </svg>
               </div>
               <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#3C3935;margin-bottom:14px">Respostas enviadas com sucesso</h2>
-              <p style="font-size:15px;color:#5C5854;line-height:1.75;max-width:420px;margin:0 auto">A equipe VMB Jurídica recebeu seu diagnóstico e entrará em contato em breve.</p>
+              <p style="font-size:15px;color:#5C5854;line-height:1.75;max-width:420px;margin:0 auto 28px">A equipe VMB Jurídica recebeu seu diagnóstico e entrará em contato em breve.</p>
+            </div>
+            <div style="border-top:1px solid #E8E3DC;padding-top:24px;font-size:13px;color:#8C8580;line-height:1.75;text-align:left">
+              <p style="margin-bottom:12px">As informações compartilhadas neste questionário são estritamente confidenciais e serão utilizadas exclusivamente pela equipe VMB Jurídica para fins de diagnóstico e assessoria.</p>
+              <p style="margin-bottom:12px">Nenhuma informação será compartilhada com terceiros sem sua autorização expressa.</p>
+              <p style="margin:0">Em caso de dúvidas, entre em contato:
+                <a href="mailto:pedro@vmbjuridica.com" style="color:#FC7E2F;text-decoration:none">pedro@vmbjuridica.com</a>
+              </p>
             </div>`;
         })
         .catch(err => {
