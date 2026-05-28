@@ -476,51 +476,17 @@
   <!-- ─── TELAS 2–7: Dimensões (geradas por JS) ───────────── -->
   <div id="dim-screens"></div>
 
-  <!-- ─── TELA 8: Resultado ────────────────────────────────── -->
+  <!-- ─── TELA 8: Confirmação ──────────────────────────────── -->
   <div class="screen card" id="screen-8">
-    <div class="section-label">Diagnóstico concluído</div>
-    <h2>Resultado da triagem</h2>
-    <p class="section-intro">Pontuação por dimensão com base nas suas respostas.</p>
+    <div class="section-label">Questionário concluído</div>
+    <h2>Obrigado, <span id="res-empresa"></span>.</h2>
+    <p style="margin-top:12px; font-size:16px; line-height:1.7; color:var(--dark)">
+      Suas respostas foram recebidas pela equipe VMB.<br>
+      Entraremos em contato para confirmar a data da nossa reunião.
+    </p>
 
-    <table class="result-table">
-      <thead>
-        <tr>
-          <th>Dimensão</th>
-          <th>Pontos</th>
-          <th>Degrau</th>
-          <th>Estágio</th>
-        </tr>
-      </thead>
-      <tbody id="result-tbody"></tbody>
-    </table>
-
-    <div class="insights-grid">
-      <div class="insight-block">
-        <div class="insight-label">Estágio predominante</div>
-        <div class="insight-value" id="res-predominante">—</div>
-        <div class="insight-sub" id="res-predominante-nome">—</div>
-      </div>
-      <div class="insight-block">
-        <div class="insight-label">Maior gap</div>
-        <div class="insight-value" id="res-gap">—</div>
-        <div class="insight-sub" id="res-gap-sub">—</div>
-      </div>
-    </div>
-
-    <div class="trilha-block">
-      <div class="trilha-label">Trilha recomendada</div>
-      <div class="trilha-value" id="res-trilha">—</div>
-    </div>
-
-    <div class="closing-text">
-      Questionário concluído.<br><br>
-      A equipe VMB analisará suas respostas antes da nossa primeira reunião. Isso nos permite chegar com uma leitura preliminar do perfil da sua empresa — e usar o tempo da reunião para aprofundar os pontos mais relevantes.<br><br>
-      Se tiver alguma dúvida antes da reunião, entre em contato diretamente com Pedro Abreu:
-      <a href="mailto:pedro@vmbjuridica.com">pedro@vmbjuridica.com</a>
-    </div>
-
-    <div class="nav-row" style="flex-direction:column; align-items:flex-start; gap:8px; border-top:none; padding-top:0; margin-top:20px">
-      <button class="btn btn-primary" id="btn-enviar" onclick="enviarEmail()">Enviar respostas para a VMB</button>
+    <div class="nav-row" style="flex-direction:column; align-items:flex-start; gap:8px; border-top:none; padding-top:0; margin-top:32px">
+      <button class="btn btn-primary" id="btn-enviar" onclick="enviarEmail()">ENVIAR RESPOSTAS</button>
       <div class="send-status" id="send-status"></div>
     </div>
   </div>
@@ -751,42 +717,15 @@
     // ─── Result rendering ─────────────────────────────────────
     function renderResult() {
       // Reset send button state when result is (re)rendered
+      // Reset send button
       const btnEnviar = document.getElementById('btn-enviar');
       btnEnviar.disabled = false;
-      btnEnviar.textContent = 'Enviar respostas para a VMB';
+      btnEnviar.textContent = 'ENVIAR RESPOSTAS';
       document.getElementById('send-status').textContent = '';
       document.getElementById('send-status').className = 'send-status';
 
-      const scores = calcScores();
-
-      // Table
-      document.getElementById('result-tbody').innerHTML = scores.map(s =>
-        `<tr>
-          <td><strong>${s.nome}</strong></td>
-          <td>${s.pts}/8</td>
-          <td><span class="degrau-badge">${s.d}</span></td>
-          <td>${s.estagio}</td>
-        </tr>`
-      ).join('');
-
-      // Predominant stage: most frequent D-number; lowest wins tie
-      const dNums = scores.map(s => parseInt(s.d[1]));
-      const freq = {};
-      dNums.forEach(n => { freq[n] = (freq[n] || 0) + 1; });
-      const maxFreq = Math.max(...Object.values(freq));
-      const predominantNum = Math.min(
-        ...Object.keys(freq).filter(k => freq[k] === maxFreq).map(Number)
-      );
-      document.getElementById('res-predominante').textContent = 'D' + predominantNum;
-      document.getElementById('res-predominante-nome').textContent = ESTAGIO_NOMES[predominantNum];
-
-      // Biggest gap: dimension with lowest score
-      const gap = scores.reduce((min, s) => s.pts < min.pts ? s : min, scores[0]);
-      document.getElementById('res-gap').textContent = gap.nome;
-      document.getElementById('res-gap-sub').textContent = gap.d + ' — ' + gap.estagio;
-
-      // Recommended track
-      document.getElementById('res-trilha').textContent = TRILHAS[predominantNum];
+      // Show company name in greeting
+      document.getElementById('res-empresa').textContent = state.dados.empresa;
     }
 
     // ─── Email sending ────────────────────────────────────────
@@ -834,7 +773,7 @@
         })
         .catch(err => {
           btn.disabled = false;
-          btn.textContent = 'Enviar respostas para a VMB';
+          btn.textContent = 'ENVIAR RESPOSTAS';
           status.textContent = 'Erro ao enviar. Verifique sua conexão e tente novamente.';
           status.className = 'send-status error';
           console.error('EmailJS error:', err);
