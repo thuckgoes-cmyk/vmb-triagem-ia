@@ -747,22 +747,25 @@
       );
       const gap = scores.reduce((min, s) => s.pts < min.pts ? s : min, scores[0]);
 
+      const scoreTotal = scores.reduce((sum, s) => sum + s.pts, 0);
+
       const params = {
-        nome:               state.dados.nome,
-        cargo:              state.dados.cargo,
-        empresa:            state.dados.empresa,
-        email_respondente:  state.dados.email,
+        nome:    state.dados.nome,
+        cargo:   state.dados.cargo,
+        empresa: state.dados.empresa,
+        email:   state.dados.email,
 
-        dim1_nome: scores[0].nome, dim1_pts: scores[0].pts, dim1_degrau: scores[0].d, dim1_estagio: scores[0].estagio,
-        dim2_nome: scores[1].nome, dim2_pts: scores[1].pts, dim2_degrau: scores[1].d, dim2_estagio: scores[1].estagio,
-        dim3_nome: scores[2].nome, dim3_pts: scores[2].pts, dim3_degrau: scores[2].d, dim3_estagio: scores[2].estagio,
-        dim4_nome: scores[3].nome, dim4_pts: scores[3].pts, dim4_degrau: scores[3].d, dim4_estagio: scores[3].estagio,
-        dim5_nome: scores[4].nome, dim5_pts: scores[4].pts, dim5_degrau: scores[4].d, dim5_estagio: scores[4].estagio,
-        dim6_nome: scores[5].nome, dim6_pts: scores[5].pts, dim6_degrau: scores[5].d, dim6_estagio: scores[5].estagio,
+        dim1_degrau: scores[0].d, dim1_score: scores[0].pts,
+        dim2_degrau: scores[1].d, dim2_score: scores[1].pts,
+        dim3_degrau: scores[2].d, dim3_score: scores[2].pts,
+        dim4_degrau: scores[3].d, dim4_score: scores[3].pts,
+        dim5_degrau: scores[4].d, dim5_score: scores[4].pts,
+        dim6_degrau: scores[5].d, dim6_score: scores[5].pts,
 
-        estagio_predominante: 'D' + predominantNum + ' — ' + ESTAGIO_NOMES[predominantNum],
-        maior_gap:            gap.nome + ' (' + gap.d + ')',
-        trilha_recomendada:   TRILHAS[predominantNum]
+        predominante: 'D' + predominantNum + ' — ' + ESTAGIO_NOMES[predominantNum],
+        gap:          gap.nome + ' (' + gap.d + ')',
+        trilha:       TRILHAS[predominantNum],
+        score_total:  scoreTotal
       };
 
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
