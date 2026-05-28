@@ -859,6 +859,21 @@
       const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(diagData))));
       const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/resultado.html?d=${encoded}`;
 
+      // Build respostas_detalhadas block
+      const RESP_LABELS = { sim: 'Sim', parcialmente: 'Parcialmente', nao: 'Não', naosei: 'Não sei' };
+      let respostasTexto = '==================================\nRESPOSTAS POR PERGUNTA\n==================================';
+      let pNum = 1;
+      DIMENSIONS.forEach(dim => {
+        respostasTexto += `\n\nDIMENSÃO ${dim.id} — ${dim.nome.toUpperCase()}\n`;
+        dim.perguntas.forEach((q, qi) => {
+          const el = document.querySelector(`input[name="d${dim.id}_q${qi + 1}"]:checked`);
+          const resp = el ? (RESP_LABELS[el.value] || el.value) : 'Não respondida';
+          respostasTexto += `P${pNum}. ${q}\nResposta: ${resp}\n`;
+          pNum++;
+        });
+      });
+      respostasTexto += '\n==================================';
+
       const params = {
         nome:    state.dados.nome,
         cargo:   state.dados.cargo,
@@ -876,6 +891,7 @@
         gap:          gap.nome + ' (' + gap.d + ')',
         trilha:       TRILHAS[predominantNum],
         score_total:  scoreTotal,
+        respostas_detalhadas: respostasTexto,
         link_diagnostico: linkDiagnostico
       };
 
