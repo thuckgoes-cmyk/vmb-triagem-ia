@@ -521,7 +521,7 @@
     </div>
     <div class="form-group">
       <label class="field-label" for="f-empresa">Empresa *</label>
-      <input type="text" id="f-empresa" placeholder="Ex.: Empresa S.A." oninput="validateDados()">
+      <input type="text" id="f-empresa" placeholder="Ex.: Empresa S.A." oninput="validateDados()" style="background:#FAF8F5;color:#8C8580;cursor:not-allowed;" readonly>
     </div>
     <div class="form-group">
       <label class="field-label" for="f-email">E-mail corporativo *</label>
@@ -586,15 +586,9 @@
 
     // ─── Credenciais de acesso ────────────────────────────────
     const USUARIOS = {
-      "nortesan": "vmb2026",
-      "cliente2": "vmb2026",
-      "cliente3": "vmb2026"
-    };
-
-    const EMPRESA_NOMES = {
-      "nortesan": "Norte Saneamento",
-      "cliente2": "Cliente 2",
-      "cliente3": "Cliente 3"
+      "nortesan": { senha: "vmb2026", empresa: "Norte Saneamento" },
+      "cliente2": { senha: "vmb2026", empresa: "Nome da Empresa 2" },
+      "cliente3": { senha: "vmb2026", empresa: "Nome da Empresa 3" }
     };
 
     // ─── Dimensions & questions ───────────────────────────────
@@ -723,8 +717,8 @@
     function doLogin() {
       const usuario = document.getElementById('l-usuario').value.trim().toLowerCase();
       const senha   = document.getElementById('l-senha').value;
-      if (USUARIOS[usuario] && USUARIOS[usuario] === senha) {
-        state.empresa_login = EMPRESA_NOMES[usuario] || usuario;
+      if (USUARIOS[usuario] && USUARIOS[usuario].senha === senha) {
+        state.empresa_login = USUARIOS[usuario].empresa || usuario;
         goTo(0);
       } else {
         document.getElementById('login-error').style.display = 'block';
