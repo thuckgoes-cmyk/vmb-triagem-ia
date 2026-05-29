@@ -377,6 +377,84 @@
     .resp-nao          { color: #A02820; }
     .resp-naosei       { color: var(--muted); }
 
+    /* ── PDF / Print button ────────────────────────────────── */
+    .btn-pdf {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #FC7E2F;
+      color: #FFFFFF;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(252,126,47,0.35);
+      transition: opacity 0.2s;
+      z-index: 100;
+    }
+    .btn-pdf:hover { opacity: 0.88; }
+
+    /* ── Print / PDF ────────────────────────────────────────── */
+    @media print {
+      @page {
+        size: A4;
+        margin: 20mm;
+      }
+
+      /* Remove interactive elements */
+      .btn-pdf       { display: none !important; }
+      .header-badge  { display: none; }
+
+      /* Reset background for print */
+      body { background: #fff; padding: 0; }
+
+      .header {
+        border-bottom: 1px solid #E8E3DC;
+        padding: 12px 0;
+        margin-bottom: 16px;
+      }
+
+      .header-inner { padding: 0; }
+
+      .main  { padding: 0; }
+      .footer { padding: 0; margin-top: 16px; }
+
+      /* Keep card borders visible */
+      .section-card {
+        border: 1px solid #E8E3DC;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 14px;
+        break-inside: avoid;
+      }
+
+      /* Keep dimension card colors — force background printing */
+      .d0 { background: #F5F4F2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d1, .d2, .d3 { background: #FEF6F0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d4 { background: #FEF0EE !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d5 { background: #EDF7F2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      .d0 .progress-fill { background: #8C8580 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d1 .progress-fill, .d2 .progress-fill, .d3 .progress-fill { background: #FC7E2F !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d4 .progress-fill { background: #D93025 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d5 .progress-fill { background: #1A7F4B !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      .trilha-block { background: #FEF6F0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .synth-block  { background: #FAF8F5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* Dim grid single column for A4 width */
+      .dim-grid        { grid-template-columns: 1fr 1fr; }
+      .synthesis-grid  { grid-template-columns: repeat(3, 1fr); }
+      .respondent-grid { grid-template-columns: 1fr 1fr; }
+
+      /* Page break before answers section */
+      .section-card.respostas-section { break-before: page; }
+    }
+
     /* ── Responsive ────────────────────────────────────────── */
     @media (max-width: 600px) {
       /* Layout */
@@ -429,6 +507,8 @@
     <div class="footer-logo">VMB JURÍDICA</div>
     <span>Documento confidencial — uso interno equipe VMB</span>
   </footer>
+
+  <button class="btn-pdf" onclick="window.print()">BAIXAR PDF</button>
 
   <script>
     function dClass(d) {
@@ -545,7 +625,7 @@
             </div>`;
         }).join('');
         perguntasHTML = `
-          <div class="section-card">
+          <div class="section-card respostas-section">
             <div class="section-title">Respostas por pergunta</div>
             ${sectionsHTML}
           </div>`;
