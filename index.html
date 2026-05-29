@@ -582,7 +582,7 @@
       'Otimização & Compliance Avançado'    // D5
     ];
 
-    const SCORE_PTS = { sim: 2, parcialmente: 1, nao: 0, naosei: 0 };
+    const SCORE_PTS = { sim: 2, parcialmente: 1, nao: 0, naosei: 0, naoaplicavel: 0 };
 
     // ─── Credenciais de acesso ────────────────────────────────
     const USUARIOS = {
@@ -680,7 +680,8 @@
           { value: 'sim',          label: 'Sim' },
           { value: 'parcialmente', label: 'Parcialmente / Em andamento' },
           { value: 'nao',          label: 'Não' },
-          { value: 'naosei',       label: 'Não sei / Não tenho essa informação' }
+          { value: 'naosei',       label: 'Não sei / Não tenho essa informação' },
+          { value: 'naoaplicavel', label: 'Não aplicável' }
         ].map(o =>
           `<label class="option-label">
             <input type="radio" name="${radioName}" value="${o.value}" onchange="onOptionChange(${screenNum})">
@@ -793,12 +794,16 @@
     function calcScores() {
       return DIMENSIONS.map(dim => {
         let pts = 0;
+        let temNaoAplicavel = false;
         dim.perguntas.forEach((_, qi) => {
           const el = document.querySelector(`input[name="d${dim.id}_q${qi + 1}"]:checked`);
-          if (el) pts += (SCORE_PTS[el.value] || 0);
+          if (el) {
+            pts += (SCORE_PTS[el.value] || 0);
+            if (el.value === 'naoaplicavel') temNaoAplicavel = true;
+          }
         });
         const { d, estagio } = getDegrau(pts);
-        return { id: dim.id, nome: dim.nome, pts, d, estagio };
+        return { id: dim.id, nome: dim.nome, pts, d, estagio, temNaoAplicavel };
       });
     }
 
@@ -838,14 +843,14 @@
       const scoreTotal = scores.reduce((sum, s) => sum + s.pts, 0);
 
       // Build diagnostic URL (data encoded as base64 JSON)
-      const RESP_MAP = { sim: 'Sim', parcialmente: 'Parcialmente', nao: 'Não', naosei: 'Não sei' };
+      const RESP_MAP = { sim: 'Sim', parcialmente: 'Parcialmente', nao: 'Não', naosei: 'Não sei', naoaplicavel: 'Não aplicável' };
       const diagData = {
         nome:    state.dados.nome,
         cargo:   state.dados.cargo,
         empresa: state.dados.empresa,
         email:   state.dados.email,
         dt:      new Date().toLocaleString('pt-BR'),
-        scores:  scores.map(s => ({ id: s.id, nome: s.nome, pts: s.pts, d: s.d, estagio: s.estagio })),
+        scores:  scores.map(s => ({ id: s.id, nome: s.nome, pts: s.pts, d: s.d, estagio: s.estagio, temNaoAplicavel: s.temNaoAplicavel })),
         respostas: DIMENSIONS.map(dim => ({
           nome: dim.nome,
           perguntas: dim.perguntas.map((q, qi) => {
@@ -862,7 +867,7 @@
       const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/email-diagnostico.html?d=${encoded}`;
 
       // Build respostas_detalhadas block
-      const RESP_LABELS = { sim: 'Sim', parcialmente: 'Parcialmente', nao: 'Não', naosei: 'Não sei' };
+      const RESP_LABELS = { sim: 'Sim', parcialmente: 'Parcialmente', nao: 'Não', naosei: 'Não sei', naoaplicavel: 'Não aplicável' };
       let respostasTexto = '==================================\nRESPOSTAS POR PERGUNTA\n==================================';
       let pNum = 1;
       DIMENSIONS.forEach(dim => {

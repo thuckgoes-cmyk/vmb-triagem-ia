@@ -376,6 +376,19 @@
     .resp-parcialmente { color: #B85A18; }
     .resp-nao          { color: #A02820; }
     .resp-naosei       { color: var(--muted); }
+    .resp-naoaplicavel { color: var(--muted); font-style: italic; }
+
+    .na-flag {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #8C8580;
+      background: rgba(0,0,0,0.06);
+      padding: 2px 7px;
+      border-radius: 3px;
+      letter-spacing: 0.04em;
+    }
 
     /* ── PDF / Print button ────────────────────────────────── */
     .btn-pdf {
@@ -574,6 +587,7 @@
               <div class="progress-fill" style="width:${pct}%"></div>
             </div>
             <div class="dim-estagio">${esc(s.estagio)}</div>
+            ${s.temNaoAplicavel ? '<span class="na-flag">contém itens não aplicáveis</span>' : ''}
           </div>`;
       }).join('');
 
@@ -616,7 +630,7 @@
       // ── Per-question answers ────────────────────────────────
       let perguntasHTML = '';
       if (data.respostas && data.respostas.length) {
-        const RESP_CLASS = { 'Sim': 'resp-sim', 'Parcialmente': 'resp-parcialmente', 'Não': 'resp-nao', 'Não sei': 'resp-naosei' };
+        const RESP_CLASS = { 'Sim': 'resp-sim', 'Parcialmente': 'resp-parcialmente', 'Não': 'resp-nao', 'Não sei': 'resp-naosei', 'Não aplicável': 'resp-naoaplicavel' };
         let pNum = 1;
         const sectionsHTML = data.respostas.map((dim, di) => {
           const items = dim.perguntas.map(p => {
