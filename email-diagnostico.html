@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMB Advisory IA — Diagnóstico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #FAF8F5;
+      color: #3C3935;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E8E3DC;
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      border-left: 4px solid #FC7E2F;
+      padding-left: 12px;
+      display: inline-block;
+      text-align: left;
+      margin-bottom: 36px;
+    }
+
+    .logo img {
+      height: 38px;
+      width: auto;
+      display: block;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: #8C8580;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #FEF0E6;
+      color: #FC7E2F;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: #3C3935;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #8C8580;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #FC7E2F;
+      color: #FFFFFF;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.88; }
+
+    .error {
+      font-size: 14px;
+      color: #8C8580;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 32px 20px; }
+      .btn  { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div style="display:flex;justify-content:center;margin-bottom:36px">
+      <div class="logo">
+        <img src="Logo.jpg" alt="VMB Jurídica">
+        <div class="logo-sub">Advisory IA</div>
+      </div>
+    </div>
+
+    <span class="badge">Diagnóstico Disponível</span>
+    <h1>Diagnóstico VMB está pronto</h1>
+    <p class="subtitle">Clique abaixo para visualizar o diagnóstico completo com resultado por dimensão, síntese executiva e respostas detalhadas.</p>
+
+    <a id="btn-diagnostico" href="#" class="btn">VER DIAGNÓSTICO COMPLETO →</a>
+
+    <p class="error" id="error-msg" style="display:none">
+      Link inválido ou expirado. Entre em contato com
+      <a href="mailto:pedro@vmbjuridica.com" style="color:#FC7E2F">pedro@vmbjuridica.com</a>
+    </p>
+  </div>
+
+  <script>
+    const param = new URLSearchParams(window.location.search).get('d');
+    if (param) {
+      document.getElementById('btn-diagnostico').href =
+        'resultado.html?d=' + encodeURIComponent(param);
+    } else {
+      document.getElementById('btn-diagnostico').style.display = 'none';
+      document.getElementById('error-msg').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

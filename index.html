@@ -865,7 +865,7 @@
         score_total: scoreTotal
       };
       const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(diagData))));
-      const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/resultado.html?d=${encoded}`;
+      const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/email-diagnostico.html?d=${encoded}`;
 
       // Build respostas_detalhadas block
       const RESP_LABELS = { sim: 'Sim', parcialmente: 'Parcialmente', nao: 'Não', naosei: 'Não sei' };
