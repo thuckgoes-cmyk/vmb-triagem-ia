@@ -327,6 +327,56 @@
 
     .error-wrap p { font-size: 14px; color: var(--muted); }
 
+    /* ── Perguntas por dimensão ────────────────────────────── */
+    .dim-section { margin-bottom: 24px; }
+    .dim-section:last-child { margin-bottom: 0; }
+
+    .dim-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pergunta-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--bg);
+    }
+    .pergunta-item:last-child { border-bottom: none; }
+
+    .pergunta-texto {
+      font-size: 13px;
+      color: var(--dark);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .pergunta-num {
+      font-weight: 600;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .pergunta-resposta {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .resp-sim          { color: #1A7F4B; }
+    .resp-parcialmente { color: #B85A18; }
+    .resp-nao          { color: #A02820; }
+    .resp-naosei       { color: var(--muted); }
+
     /* ── Responsive ────────────────────────────────────────── */
     @media (max-width: 600px) {
       /* Layout */
@@ -472,7 +522,36 @@
           </div>
         </div>`;
 
-      main.innerHTML = respondentHTML + dimensionsHTML + synthesisHTML;
+      // ── Per-question answers ────────────────────────────────
+      let perguntasHTML = '';
+      if (data.respostas && data.respostas.length) {
+        const RESP_CLASS = { 'Sim': 'resp-sim', 'Parcialmente': 'resp-parcialmente', 'Não': 'resp-nao', 'Não sei': 'resp-naosei' };
+        let pNum = 1;
+        const sectionsHTML = data.respostas.map((dim, di) => {
+          const items = dim.perguntas.map(p => {
+            const cls = RESP_CLASS[p.resposta] || 'resp-naosei';
+            const html = `
+              <div class="pergunta-item">
+                <div class="pergunta-texto"><span class="pergunta-num">P${pNum}.</span>${esc(p.texto)}</div>
+                <div class="pergunta-resposta ${cls}">${esc(p.resposta)}</div>
+              </div>`;
+            pNum++;
+            return html;
+          }).join('');
+          return `
+            <div class="dim-section">
+              <div class="dim-section-title">Dimensão ${di + 1} — ${esc(dim.nome)}</div>
+              ${items}
+            </div>`;
+        }).join('');
+        perguntasHTML = `
+          <div class="section-card">
+            <div class="section-title">Respostas por pergunta</div>
+            ${sectionsHTML}
+          </div>`;
+      }
+
+      main.innerHTML = respondentHTML + dimensionsHTML + synthesisHTML + perguntasHTML;
       document.getElementById('footer').style.display = 'flex';
     }
 
