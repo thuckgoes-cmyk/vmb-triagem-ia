@@ -508,14 +508,25 @@
     <span>Documento confidencial — uso interno equipe VMB</span>
   </footer>
 
-  <button class="btn-pdf" onclick="window.print()">BAIXAR PDF</button>
+  <button class="btn-pdf" onclick="baixarPDF()">BAIXAR PDF</button>
 
   <script>
+    let _empresaNome = '';
+
+    function baixarPDF() {
+      const titulo = 'VMB Advisory IA — Diagnóstico - ' + _empresaNome;
+      const original = document.title;
+      document.title = titulo;
+      window.print();
+      document.title = original;
+    }
+
     function dClass(d) {
       return 'd' + d[1];
     }
 
     function render(data) {
+      _empresaNome = data.empresa || '';
       const main = document.getElementById('main');
 
       // ── Respondent ──────────────────────────────────────────
