@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMB Advisory IA — Diagnóstico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FC7E2F;
+      --dark:   #3C3935;
+      --bg:     #FAF8F5;
+      --white:  #FFFFFF;
+      --border: #E8E3DC;
+      --muted:  #6F6963;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      padding: 0 0 64px;
+    }
+
+    /* ── Header ────────────────────────────────────────────── */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      border-left: 4px solid var(--orange);
+      padding-left: 12px;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .header-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    /* ── Main layout ───────────────────────────────────────── */
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 24px 0;
+    }
+
+    /* ── Section card ──────────────────────────────────────── */
+    .section-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Respondent info ───────────────────────────────────── */
+    .respondent-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .info-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .info-value.empresa {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    /* ── Dimension cards ───────────────────────────────────── */
+    .dim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .dim-card {
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid transparent;
+    }
+
+    .dim-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+
+    .dim-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+
+    .dim-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .degrau-badge {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .score-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .dim-estagio {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Degrau color schemes */
+    .d0 { background: #F5F4F2; border-color: #E0DBD4; }
+    .d0 .degrau-badge { background: #E0DBD4; color: #6B6561; }
+    .d0 .progress-fill { background: #8C8580; }
+    .d0 .dim-estagio { color: #6B6561; }
+
+    .d1, .d2, .d3 { background: #FEF6F0; border-color: #FDDFC8; }
+    .d1 .degrau-badge, .d2 .degrau-badge, .d3 .degrau-badge { background: #FEE0C8; color: #B85A18; }
+    .d1 .progress-fill, .d2 .progress-fill, .d3 .progress-fill { background: var(--orange); }
+    .d1 .dim-estagio, .d2 .dim-estagio, .d3 .dim-estagio { color: #B85A18; }
+
+    .d4 { background: #FEF0EE; border-color: #FAD0CB; }
+    .d4 .degrau-badge { background: #FAD0CB; color: #A02820; }
+    .d4 .progress-fill { background: #D93025; }
+    .d4 .dim-estagio { color: #A02820; }
+
+    .d5 { background: #EDF7F2; border-color: #B8E8CD; }
+    .d5 .degrau-badge { background: #B8E8CD; color: #0F5C32; }
+    .d5 .progress-fill { background: #1A7F4B; }
+    .d5 .dim-estagio { color: #0F5C32; }
+
+    /* v2: dimensão integralmente não aplicável */
+    .dna { background: #F5F4F2; border-color: #E0DBD4; opacity: 0.85; }
+    .dna .degrau-badge { background: #E0DBD4; color: #6B6561; }
+    .dna .progress-fill { background: transparent; }
+    .dna .dim-estagio { color: #6B6561; font-style: italic; }
+
+    /* v2: alerta de visibilidade */
+    .vis-alert {
+      border-left: 4px solid #B85A18;
+      background: #FEF6F0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 14px 18px;
+      margin-top: 16px;
+    }
+
+    .vis-alert-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #B85A18;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .vis-alert-text {
+      font-size: 13px;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    /* ── Synthesis ─────────────────────────────────────────── */
+    .synthesis-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .synth-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+
+    .synth-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .synth-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+
+    .synth-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .trilha-block {
+      border-left: 4px solid var(--orange);
+      padding: 16px 20px;
+      background: #FEF6F0;
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .trilha-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #C25A12;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .trilha-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--dark);
+    }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    .footer {
+      max-width: 800px;
+      margin: 24px auto 0;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-logo {
+      border-left: 3px solid var(--orange);
+      padding-left: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--dark);
+    }
+
+    /* ── Error state ───────────────────────────────────────── */
+    .error-wrap {
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .error-wrap h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .error-wrap p { font-size: 14px; color: var(--muted); }
+
+    /* ── Perguntas por dimensão ────────────────────────────── */
+    .dim-section { margin-bottom: 24px; }
+    .dim-section:last-child { margin-bottom: 0; }
+
+    .dim-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pergunta-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--bg);
+    }
+    .pergunta-item:last-child { border-bottom: none; }
+
+    .pergunta-texto {
+      font-size: 13px;
+      color: var(--dark);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .pergunta-num {
+      font-weight: 600;
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .pergunta-resposta {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .resp-sim          { color: #1A7F4B; }
+    .resp-parcialmente { color: #B85A18; }
+    .resp-nao          { color: #A02820; }
+    .resp-naosei       { color: var(--muted); }
+    .resp-naoaplicavel { color: var(--muted); font-style: italic; }
+
+    .na-flag {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #6F6963;
+      background: rgba(0,0,0,0.06);
+      padding: 2px 7px;
+      border-radius: 3px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── PDF / Print button ────────────────────────────────── */
+    .btn-pdf {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: #FC7E2F;
+      color: #FFFFFF;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(252,126,47,0.35);
+      transition: opacity 0.2s;
+      z-index: 100;
+    }
+    .btn-pdf:hover { opacity: 0.88; }
+
+    /* ── Print / PDF ───────────────────────────────────────── */
+    @media print {
+      @page {
+        size: A4;
+        margin: 20mm;
+      }
+
+      .btn-pdf       { display: none !important; }
+      .header-badge  { display: none; }
+
+      body { background: #fff; padding: 0; }
+
+      .header {
+        border-bottom: 1px solid #E8E3DC;
+        padding: 12px 0;
+        margin-bottom: 16px;
+      }
+
+      .header-inner { padding: 0; }
+
+      .main  { padding: 0; }
+      .footer { padding: 0; margin-top: 16px; }
+
+      .section-card {
+        border: 1px solid #E8E3DC;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 14px;
+        break-inside: avoid;
+      }
+
+      .d0, .dna { background: #F5F4F2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d1, .d2, .d3 { background: #FEF6F0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d4 { background: #FEF0EE !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d5 { background: #EDF7F2 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      .d0 .progress-fill { background: #8C8580 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d1 .progress-fill, .d2 .progress-fill, .d3 .progress-fill { background: #FC7E2F !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d4 .progress-fill { background: #D93025 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .d5 .progress-fill { background: #1A7F4B !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      .trilha-block, .vis-alert { background: #FEF6F0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .synth-block  { background: #FAF8F5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      .dim-grid        { grid-template-columns: 1fr 1fr; }
+      .synthesis-grid  { grid-template-columns: repeat(3, 1fr); }
+      .respondent-grid { grid-template-columns: 1fr 1fr; }
+
+      .section-card.respostas-section { break-before: page; }
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .header-inner { padding: 0 16px; }
+      .main         { padding: 20px 16px 0; }
+      .section-card { padding: 20px 16px; border-radius: 10px; }
+
+      .respondent-grid  { grid-template-columns: 1fr; }
+      .dim-grid         { grid-template-columns: 1fr; }
+      .synthesis-grid   { grid-template-columns: 1fr; }
+
+      .info-value.empresa { font-size: 16px; }
+      .info-value   { font-size: 14px; }
+      .dim-name     { font-size: 14px; }
+      .synth-value  { font-size: 15px; }
+      .trilha-value { font-size: 15px; }
+
+      .footer {
+        padding: 0 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <img src="Logo.jpg" alt="VMB Jurídica" style="height:38px;width:auto;display:block;">
+        <div class="logo-sub">Advisory IA</div>
+      </div>
+      <span class="header-badge">Diagnóstico Interno</span>
+    </div>
+  </header>
+
+  <main class="main" id="main">
+    <div class="error-wrap">
+      <h2>Carregando diagnóstico…</h2>
+      <p>Aguarde um instante.</p>
+    </div>
+  </main>
+
+  <footer class="footer" id="footer" style="display:none">
+    <div class="footer-logo">VMB JURÍDICA</div>
+    <span>Documento confidencial — uso interno equipe VMB</span>
+  </footer>
+
+  <button class="btn-pdf" onclick="baixarPDF()">BAIXAR PDF</button>
+
+  <script>
+    let _empresaNome = '';
+
+    function baixarPDF() {
+      const titulo = 'VMB Advisory IA — Diagnóstico - ' + _empresaNome;
+      const original = document.title;
+      document.title = titulo;
+      window.print();
+      document.title = original;
+    }
+
+    // v2: trata dimensão não aplicável (d = '—')
+    function dClass(d) {
+      if (!d || d === '—') return 'dna';
+      return 'd' + d[1];
+    }
+
+    // v2: máximo da dimensão = 2 × perguntas válidas (fallback 8 p/ payloads antigos)
+    function dimMax(s) {
+      return (typeof s.validas === 'number') ? (2 * s.validas) : 8;
+    }
+
+    function render(data) {
+      _empresaNome = data.empresa || '';
+      const main = document.getElementById('main');
+
+      // ── Respondent ─────────────────────────────────────────
+      const respondentHTML = `
+        <div class="section-card">
+          <div class="section-title">Dados do respondente</div>
+          <div class="respondent-grid">
+            <div class="info-field" style="grid-column:1/-1">
+              <div class="info-label">Empresa</div>
+              <div class="info-value empresa">${esc(data.empresa)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">Nome</div>
+              <div class="info-value">${esc(data.nome)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">Cargo</div>
+              <div class="info-value">${esc(data.cargo)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">E-mail</div>
+              <div class="info-value">${esc(data.email)}</div>
+            </div>
+            <div class="info-field">
+              <div class="info-label">Data do envio</div>
+              <div class="info-value">${esc(data.dt)}</div>
+            </div>
+          </div>
+        </div>`;
+
+      // ── Dimensions ─────────────────────────────────────────
+      const dimsHTML = data.scores.map(s => {
+        const max = dimMax(s);
+        const isNA = (s.d === '—' || max === 0);
+        const pct = isNA ? 0 : Math.round((s.pts / max) * 100);
+        const cls = dClass(s.d);
+        const scoreLabel = isNA ? 'N/A' : `${s.pts}/${max}`;
+        const naFlag = (!isNA && s.temNaoAplicavel)
+          ? '<span class="na-flag">contém itens não aplicáveis — pontuação ajustada</span>' : '';
+        return `
+          <div class="dim-card ${cls}">
+            <div class="dim-card-header">
+              <div class="dim-name">${esc(s.nome)}</div>
+              <div class="dim-badges">
+                <span class="score-badge">${scoreLabel}</span>
+                <span class="degrau-badge">${esc(s.d)}</span>
+              </div>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${pct}%"></div>
+            </div>
+            <div class="dim-estagio">${esc(s.estagio)}</div>
+            ${naFlag}
+          </div>`;
+      }).join('');
+
+      // v2: alertas de visibilidade (2+ "não sei" na dimensão)
+      const visAlertas = data.scores.filter(s => typeof s.naoSei === 'number' && s.naoSei >= 2);
+      const visHTML = visAlertas.length ? `
+        <div class="vis-alert">
+          <div class="vis-alert-label">Alerta de visibilidade</div>
+          <div class="vis-alert-text">
+            O respondente declarou não ter informação ("não sei") em 2 ou mais itens das dimensões:
+            <strong>${visAlertas.map(s => esc(s.nome)).join(', ')}</strong>.
+            Possível gap de visibilidade interna — explorar na reunião de diagnóstico.
+          </div>
+        </div>` : '';
+
+      const dimensionsHTML = `
+        <div class="section-card">
+          <div class="section-title">Resultado por dimensão</div>
+          <div class="dim-grid">${dimsHTML}</div>
+          ${visHTML}
+        </div>`;
+
+      // ── Synthesis ──────────────────────────────────────────
+      const predominanteParts = data.predominante.split(' — ');
+      const gapParts = data.gap.match(/^(.+?)\s*\(([^)]+)\)$/) || [, data.gap, ''];
+
+      // v2: máximo global dinâmico (soma dos máximos por dimensão)
+      const maxGlobal = data.scores.reduce((sum, s) => sum + dimMax(s), 0) || 48;
+      const pctGlobal = maxGlobal ? Math.round((data.score_total / maxGlobal) * 100) : 0;
+
+      const synthesisHTML = `
+        <div class="section-card">
+          <div class="section-title">Síntese executiva</div>
+          <div class="synthesis-grid">
+            <div class="synth-block">
+              <div class="synth-label">Estágio predominante</div>
+              <div class="synth-value">${esc(predominanteParts[0] || data.predominante)}</div>
+              <div class="synth-sub">${esc(predominanteParts[1] || '')}</div>
+            </div>
+            <div class="synth-block">
+              <div class="synth-label">Maior gap</div>
+              <div class="synth-value">${esc(gapParts[2] || '')}</div>
+              <div class="synth-sub">${esc(gapParts[1] || data.gap)}</div>
+            </div>
+            <div class="synth-block">
+              <div class="synth-label">Pontuação global</div>
+              <div class="synth-value">${data.score_total}/${maxGlobal}</div>
+              <div class="synth-sub">${pctGlobal}% do potencial máximo</div>
+            </div>
+          </div>
+          <div class="trilha-block">
+            <div class="trilha-label">Trilha recomendada</div>
+            <div class="trilha-value">${esc(data.trilha)}</div>
+          </div>
+        </div>`;
+
+      // ── Per-question answers ───────────────────────────────
+      let perguntasHTML = '';
+      if (data.respostas && data.respostas.length) {
+        const RESP_CLASS = { 'Sim': 'resp-sim', 'Parcialmente': 'resp-parcialmente', 'Não': 'resp-nao', 'Não sei': 'resp-naosei', 'Não aplicável': 'resp-naoaplicavel' };
+        let pNum = 1;
+        const sectionsHTML = data.respostas.map((dim, di) => {
+          const items = dim.perguntas.map(p => {
+            const cls = RESP_CLASS[p.resposta] || 'resp-naosei';
+            const html = `
+              <div class="pergunta-item">
+                <div class="pergunta-texto"><span class="pergunta-num">P${pNum}.</span>${esc(p.texto)}</div>
+                <div class="pergunta-resposta ${cls}">${esc(p.resposta)}</div>
+              </div>`;
+            pNum++;
+            return html;
+          }).join('');
+          return `
+            <div class="dim-section">
+              <div class="dim-section-title">Dimensão ${di + 1} — ${esc(dim.nome)}</div>
+              ${items}
+            </div>`;
+        }).join('');
+        perguntasHTML = `
+          <div class="section-card respostas-section">
+            <div class="section-title">Respostas por pergunta</div>
+            ${sectionsHTML}
+          </div>`;
+      }
+
+      main.innerHTML = respondentHTML + dimensionsHTML + synthesisHTML + perguntasHTML;
+      document.getElementById('footer').style.display = 'flex';
+    }
+
+    function esc(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // v2: decodificação UTF-8 com TextDecoder (substitui escape/unescape)
+    function decodeB64Utf8(b64) {
+      const bin = atob(b64);
+      const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+      return new TextDecoder().decode(bytes);
+    }
+
+    function init() {
+      const param = new URLSearchParams(window.location.search).get('d');
+      if (!param) {
+        document.getElementById('main').innerHTML = `
+          <div class="error-wrap">
+            <h2>Link inválido</h2>
+            <p>Este link não contém dados de diagnóstico. Verifique o e-mail recebido.</p>
+          </div>`;
+        return;
+      }
+      try {
+        const data = JSON.parse(decodeB64Utf8(param));
+        render(data);
+      } catch (e) {
+        document.getElementById('main').innerHTML = `
+          <div class="error-wrap">
+            <h2>Erro ao carregar diagnóstico</h2>
+            <p>Os dados do link estão corrompidos ou incompletos. O link pode ter sido truncado pelo cliente de e-mail — tente copiar e colar o endereço completo no navegador.</p>
+          </div>`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

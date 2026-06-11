@@ -924,7 +924,7 @@
         empresa: state.dados.empresa,
         email:   state.dados.email,
         dt:      new Date().toLocaleString('pt-BR'),
-        scores:  scores.map(s => ({ id: s.id, nome: s.nome, pts: s.pts, d: s.d, estagio: s.estagio, temNaoAplicavel: s.temNaoAplicavel })),
+        scores:  scores.map(s => ({ id: s.id, nome: s.nome, pts: s.pts, validas: s.validas, naoSei: s.naoSei, d: s.d, estagio: s.estagio, temNaoAplicavel: s.temNaoAplicavel })),
         respostas: DIMENSIONS.map(dim => ({
           nome: dim.nome,
           perguntas: dim.perguntas.map((q, qi) => {
@@ -938,7 +938,7 @@
         score_total: scoreTotal
       };
       const encoded = b64utf8(JSON.stringify(diagData));
-      const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/email-diagnostico.html?d=${encoded}`;
+      const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/email-diagnostico-v2.html?d=${encoded}`;
 
       // Bloco de respostas detalhadas
       let respostasTexto = '==================================\nRESPOSTAS POR PERGUNTA\n==================================';
