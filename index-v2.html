@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMB Advisory IA — Diagnóstico Preliminar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FC7E2F;
+      --dark:   #3C3935;
+      --bg:     #FAF8F5;
+      --white:  #FFFFFF;
+      --border: #E8E3DC;
+      --muted:  #6F6963; /* v2: escurecido p/ contraste WCAG AA em textos pequenos */
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 64px;
+    }
+
+    /* ── Header / Logo ─────────────────────────────────────── */
+    .header {
+      width: 100%;
+      max-width: 720px;
+      padding: 24px 0 32px;
+    }
+
+    .logo {
+      border-left: 4px solid var(--orange);
+      padding-left: 12px;
+      display: inline-block;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* ── Progress bar ──────────────────────────────────────── */
+    .progress-wrap {
+      width: 100%;
+      max-width: 720px;
+      margin-bottom: 28px;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 2px;
+      transition: width 0.35s ease;
+    }
+
+    /* ── Card ──────────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 720px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+    }
+
+    /* ── Screens ───────────────────────────────────────────── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Typography ────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      background: #FEF0E6;
+      color: #C25A12; /* v2: laranja escurecido em texto pequeno p/ contraste */
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 30px;
+      line-height: 1.2;
+      color: var(--dark);
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 21px;
+      line-height: 1.3;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #C25A12;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .section-intro {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      margin-top: 4px;
+    }
+
+    p { font-size: 15px; line-height: 1.7; color: #5C5854; margin-bottom: 12px; }
+
+    /* ── Form fields ───────────────────────────────────────── */
+    .form-group { margin-bottom: 20px; }
+
+    label.field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus { border-color: var(--orange); }
+
+    input[type="password"] {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="password"]:focus { border-color: var(--orange); }
+
+    .field-error {
+      font-size: 12px;
+      color: #C0392B;
+      margin-top: 5px;
+      display: none;
+    }
+
+    /* ── Question blocks ───────────────────────────────────── */
+    .question-block { margin-bottom: 0; border-radius: var(--radius); transition: background 0.3s; }
+    .question-block.pendente { background: #FEF6F0; outline: 2px solid var(--orange); outline-offset: 6px; }
+
+    .question-divider {
+      height: 1px;
+      background: var(--bg);
+      margin: 20px 0;
+    }
+
+    .question-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--dark);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 7px; }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 14px;
+      color: var(--dark);
+      user-select: none;
+    }
+
+    .option-label:hover { border-color: #CEC9C1; background: #FDFCFB; }
+
+    .option-label input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+
+    .option-label input[type="radio"]:checked {
+      border-color: var(--orange);
+      background: var(--orange);
+      box-shadow: inset 0 0 0 3px var(--white);
+    }
+
+    .option-label:has(input:checked) {
+      border-color: var(--orange);
+      background: #FEF6F0;
+    }
+
+    /* ── Buttons ───────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 46px;
+      padding: 0 26px;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary { background: var(--orange); color: var(--white); }
+    .btn-primary:hover:not(:disabled) { opacity: 0.87; }
+    .btn-primary:disabled { opacity: 0.38; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      margin-right: 12px;
+    }
+    .btn-ghost:hover { background: var(--bg); }
+
+    .nav-row {
+      display: flex;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .answer-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: auto;
+      padding-left: 12px;
+    }
+
+    .send-status { font-size: 13px; margin-top: 10px; min-height: 20px; }
+    .send-status.error   { color: #C0392B; }
+    .send-status.success { color: #1A7F4B; }
+
+    /* ── Footer note ───────────────────────────────────────── */
+    .privacy-note {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 32px;
+      max-width: 720px;
+      line-height: 1.6;
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      body          { padding: 16px 16px 64px; }
+      .header       { padding: 16px 0 20px; }
+      .card         { padding: 24px 16px; border-radius: 10px; }
+      .progress-wrap { margin-bottom: 20px; }
+
+      h1            { font-size: 24px; }
+      h2            { font-size: 19px; }
+      .question-text { font-size: 16px; }
+      .section-intro { font-size: 14px; }
+      p             { font-size: 15px; }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        height: 48px;
+        font-size: 16px; /* evita auto-zoom no iOS */
+      }
+
+      .option-label {
+        min-height: 48px;
+        padding: 12px 14px;
+        font-size: 15px;
+      }
+
+      .btn {
+        width: 100%;
+        height: 48px;
+        font-size: 16px;
+      }
+      .btn-ghost    { margin-right: 0; }
+      .nav-row {
+        flex-direction: column-reverse;
+        gap: 10px;
+      }
+      .answer-hint { margin-left: 0; padding-left: 0; text-align: center; width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo">
+      <img src="Logo.jpg" alt="VMB Jurídica" style="height:38px;width:auto;display:block;">
+      <div class="logo-sub">Advisory IA</div>
+    </div>
+  </header>
+
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-label" id="progressLabel"></div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- ─── TELA LOGIN ──────────────────────────────────────── -->
+  <div class="screen active card" id="screen-login">
+    <div class="section-label">VMB Advisory IA</div>
+    <h2>Acesso Restrito</h2>
+    <p class="section-intro">Este questionário é de uso exclusivo do destinatário autorizado pela VMB Jurídica.</p>
+
+    <div class="form-group">
+      <label class="field-label" for="l-usuario">Usuário</label>
+      <input type="text" id="l-usuario" autocomplete="username"
+             oninput="clearLoginError()"
+             onkeydown="if(event.key==='Enter') document.getElementById('l-senha').focus()">
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="l-senha">Senha</label>
+      <input type="password" id="l-senha" autocomplete="current-password"
+             oninput="clearLoginError()"
+             onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+
+    <div id="login-error" style="display:none;font-size:13px;color:#C0392B;margin-bottom:16px;line-height:1.5;">
+      Acesso não autorizado. Entre em contato com
+      <a href="mailto:pedro@vmbjuridica.com" style="color:#C0392B">pedro@vmbjuridica.com</a>
+    </div>
+
+    <button class="btn btn-primary" onclick="doLogin()" style="width:100%">ACESSAR</button>
+  </div>
+
+  <!-- ─── TELA 0: Boas-vindas ─────────────────────────────── -->
+  <div class="screen card" id="screen-0">
+    <div id="restore-banner" style="display:none;border:1.5px solid var(--orange);background:#FEF6F0;border-radius:8px;padding:16px 18px;margin-bottom:24px;">
+      <p style="font-size:14px;color:var(--dark);margin-bottom:12px;"><strong>Encontramos respostas salvas de uma sessão anterior.</strong> Você pode continuar de onde parou ou começar do zero.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary" style="height:40px;font-size:14px;" onclick="continuarSalvo()">Continuar de onde parei</button>
+        <button class="btn btn-ghost" style="height:40px;font-size:14px;margin-right:0;" onclick="comecarDoZero()">Começar do zero</button>
+      </div>
+    </div>
+    <span class="badge">Diagnóstico Preliminar</span>
+    <h1>VMB Advisory IA</h1>
+    <p>Este questionário é parte do processo de diagnóstico VMB Advisory IA. Ele cobre seis dimensões da adoção de inteligência artificial na sua empresa.</p>
+    <p>Não há respostas certas ou erradas — o objetivo é mapear onde vocês estão hoje. Quando não tiver a informação, responda "Não sei": isso também é um dado relevante para o diagnóstico.</p>
+    <p><strong>Tempo estimado: 8 a 10 minutos.</strong></p>
+    <p style="margin-top:8px; font-size:13px; color:var(--muted)">Suas respostas são confidenciais e serão utilizadas exclusivamente pela equipe VMB Jurídica para preparação da reunião de diagnóstico. Seu progresso fica salvo neste navegador caso precise interromper.</p>
+    <div style="margin-top:28px">
+      <button class="btn btn-primary" onclick="goTo(1)">Iniciar diagnóstico →</button>
+    </div>
+  </div>
+
+  <!-- ─── TELA 1: Dados do respondente ────────────────────── -->
+  <div class="screen card" id="screen-1">
+    <div class="section-label">Identificação</div>
+    <h2>Dados do respondente</h2>
+    <p class="section-intro">Preencha suas informações antes de iniciar o questionário.</p>
+
+    <div class="form-group">
+      <label class="field-label" for="f-nome">Nome completo *</label>
+      <input type="text" id="f-nome" placeholder="Ex.: Ana Souza" oninput="validateDados()">
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="f-cargo">Cargo *</label>
+      <input type="text" id="f-cargo" placeholder="Ex.: Diretor Jurídico" oninput="validateDados()">
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="f-empresa">Empresa *</label>
+      <input type="text" id="f-empresa" oninput="validateDados()" style="background:#FAF8F5;color:#6F6963;cursor:not-allowed;" readonly>
+    </div>
+    <div class="form-group">
+      <label class="field-label" for="f-email">E-mail corporativo *</label>
+      <input type="email" id="f-email" placeholder="Ex.: ana@empresa.com.br" oninput="validateDados()">
+      <div class="field-error" id="f-email-error">Informe um e-mail válido (ex.: nome@empresa.com.br).</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goTo(0)">← Voltar</button>
+      <button class="btn btn-primary" id="btn-dados" disabled onclick="saveDados()">Avançar →</button>
+    </div>
+  </div>
+
+  <!-- ─── TELAS 2–7: Dimensões (geradas por JS) ───────────── -->
+  <div id="dim-screens"></div>
+
+  <!-- ─── TELA 8: Revisão e envio ─────────────────────────── -->
+  <div class="screen card" id="screen-8">
+    <div class="section-label">Última etapa</div>
+    <h2>Quase lá, <span id="res-empresa"></span>.</h2>
+    <p style="margin-top:12px; font-size:16px; line-height:1.7; color:var(--dark)">
+      Suas respostas estão prontas para envio.<br>
+      Se quiser revisar alguma seção, use o botão Voltar. Quando estiver tudo certo, clique em <strong>Enviar respostas</strong>.
+    </p>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;">
+      As respostas só chegam à equipe VMB após o envio.
+    </p>
+
+    <div class="nav-row" style="flex-direction:column; align-items:flex-start; gap:8px;">
+      <div style="display:flex; gap:0; width:100%; flex-wrap:wrap;">
+        <button class="btn btn-ghost" onclick="goTo(7)">← Voltar</button>
+        <button class="btn btn-primary" id="btn-enviar" onclick="enviarEmail()">ENVIAR RESPOSTAS</button>
+      </div>
+      <div class="send-status" id="send-status"></div>
+    </div>
+  </div>
+
+  <p class="privacy-note">
+    Suas respostas são confidenciais e serão utilizadas exclusivamente pela equipe VMB Jurídica para preparação da reunião de diagnóstico. Não serão compartilhadas com terceiros.
+  </p>
+
+  <script>
+    // ─── EmailJS ─────────────────────────────────────────────
+    const EMAILJS_SERVICE_ID  = 'service_ab1svvu';
+    const EMAILJS_TEMPLATE_ID = 'template_yawpxtr';
+    const EMAILJS_PUBLIC_KEY  = 'dGtPCaLNYFKNEpYZM';
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    // ─── Lookup tables ───────────────────────────────────────
+    const ESTAGIO_NOMES = [
+      'INERTE',
+      'USO NÃO GOVERNADO',
+      'EXPERIMENTAÇÃO ISOLADA',
+      'AVALIAÇÃO DE FORNECEDORES',
+      'IMPLANTAÇÃO EM CURSO',
+      'IA ESTRUTURADA'
+    ];
+
+    const TRILHAS = [
+      'Sensibilização & Política Básica',   // D0
+      'Sensibilização & Política Básica',   // D1
+      'Estruturação & Governança',          // D2
+      'Estruturação & Governança',          // D3
+      'Otimização & Compliance Avançado',   // D4
+      'Otimização & Compliance Avançado'    // D5
+    ];
+
+    // v2: pontuação normal e reversa (perguntas onde "Sim" indica risco)
+    const SCORE_PTS         = { sim: 2, parcialmente: 1, nao: 0, naosei: 0 };
+    const SCORE_PTS_REVERSO = { sim: 0, parcialmente: 1, nao: 2, naosei: 0 };
+
+    // ─── Credenciais de acesso ───────────────────────────────
+    const USUARIOS = {
+      "rumo": { senha: "vmb2026", empresa: "Rumo S.A." }
+    };
+
+    // ─── Dimensions & questions ──────────────────────────────
+    // v2: perguntas agora são objetos { t: texto, r: reverso? }
+    const DIMENSIONS = [
+      {
+        id: 1,
+        nome: 'Tecnologia & Ferramentas',
+        intro: 'Seção 1 de 6 — Ferramentas e sistemas de IA atualmente em uso na empresa.',
+        perguntas: [
+          { t: 'A empresa possui licença corporativa contratada de alguma ferramenta de IA? (ex: Microsoft 365 Copilot, Google Gemini, ChatGPT Enterprise, ou similar)' },
+          { t: 'As ferramentas de IA estão integradas a sistemas internos da empresa (ERP, CRM, gestão documental)?' },
+          { t: 'Funcionários utilizam contas pessoais de ferramentas de IA (ex.: ChatGPT gratuito, Gemini pessoal) em tarefas de trabalho, fora do controle da empresa?', r: true },
+          { t: 'Há controle ou inventário das ferramentas de IA em uso nas diferentes áreas da empresa?' }
+        ]
+      },
+      {
+        id: 2,
+        nome: 'Governança & Política',
+        intro: 'Seção 2 de 6 — Estrutura formal de decisão e responsabilização sobre uso de IA.',
+        perguntas: [
+          { t: 'Existe política escrita e aprovada sobre uso de IA na empresa?' },
+          { t: 'Há um responsável formal pela pauta de IA (CIO, CTO, comitê específico, ou cargo equivalente)?' },
+          { t: 'A política de uso de IA é comunicada e treinada com os funcionários?' },
+          { t: 'Existe processo formal para aprovar a contratação de novas ferramentas de IA?' }
+        ]
+      },
+      {
+        id: 3,
+        nome: 'Risco Jurídico & Compliance',
+        intro: 'Seção 3 de 6 — Mapeamento de exposição jurídica, LGPD e contratos.',
+        perguntas: [
+          { t: 'Os contratos com fornecedores de IA foram revisados pelo departamento jurídico com foco específico em IA (não apenas pela revisão jurídica padrão)?' },
+          { t: 'A política de uso de IA aborda explicitamente quais dados pessoais podem ser inseridos nas ferramentas?' },
+          { t: 'Foram revisadas as cláusulas de confidencialidade com clientes para verificar se o uso de IA pode representar violação?' },
+          { t: 'Está definido quem é o responsável legal pelos outputs gerados por IA (decisões automatizadas, documentos, análises)?' }
+        ]
+      },
+      {
+        id: 4,
+        nome: 'Pessoas & Cultura',
+        intro: 'Seção 4 de 6 — Engajamento da liderança, treinamento e cultura interna.',
+        perguntas: [
+          { t: 'A alta liderança (CEO, diretores) usa ativamente ferramentas de IA no trabalho?' },
+          { t: 'A empresa realizou treinamento formal sobre uso de IA para os funcionários nos últimos 12 meses?' },
+          { t: 'Existe um ou mais "champions" internos — pessoas que lideram e incentivam a adoção de IA na empresa?' },
+          { t: 'O tema de IA está sendo discutido ativamente em reuniões de liderança ou planejamento estratégico?' }
+        ]
+      },
+      {
+        id: 5,
+        nome: 'Estratégia & Demanda',
+        intro: 'Seção 5 de 6 — Posicionamento estratégico e origem da demanda por IA.',
+        perguntas: [
+          { t: 'A adoção de IA está incluída no planejamento estratégico formal da empresa (plano plurianual, OKRs, ou equivalente)?' },
+          { t: 'Existe orçamento específico alocado para iniciativas de IA no ciclo atual?' },
+          { t: 'A empresa mapeou exigências externas relacionadas a IA — de clientes, reguladores, conselho ou legislação (como o marco legal da IA em tramitação)?' },
+          { t: 'Há clareza sobre quais processos ou áreas seriam prioritários para adoção de IA na empresa?' }
+        ]
+      },
+      {
+        id: 6,
+        nome: 'Dados & Infraestrutura',
+        intro: 'Seção 6 de 6 — Qualidade e estrutura dos dados da empresa.',
+        perguntas: [
+          { t: 'A empresa possui inventário ou mapeamento dos principais dados que produz e armazena?' },
+          { t: 'Os dados críticos da empresa estão estruturados e acessíveis para uso em novas ferramentas?' },
+          { t: 'Existe área ou responsável dedicado a dados, Business Intelligence ou analytics na empresa?' },
+          { t: 'Os dados da empresa são classificados por nível de sensibilidade (dados pessoais, dados estratégicos, dados operacionais)?' }
+        ]
+      }
+    ];
+
+    // ─── State & persistência ────────────────────────────────
+    const STORAGE_KEY = 'vmb_triagem_v2';
+    const state = { dados: {} };
+    let currentScreen = 0;
+
+    function salvarProgresso() {
+      try {
+        const respostas = {};
+        document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+          respostas[el.name] = el.value;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          dados: {
+            nome:  document.getElementById('f-nome').value,
+            cargo: document.getElementById('f-cargo').value,
+            email: document.getElementById('f-email').value
+          },
+          respostas,
+          screen: currentScreen
+        }));
+      } catch (e) { /* armazenamento indisponível — segue sem persistência */ }
+    }
+
+    function restaurarProgresso() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) { return null; }
+    }
+
+    function limparProgresso() {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    }
+
+    // ─── Build dimension screens dynamically ─────────────────
+    const dimContainer = document.getElementById('dim-screens');
+
+    DIMENSIONS.forEach((dim, idx) => {
+      const screenNum = idx + 2; // screens 2..7
+      const isLast = idx === DIMENSIONS.length - 1;
+
+      let questionsHTML = '';
+      dim.perguntas.forEach((q, qi) => {
+        if (qi > 0) questionsHTML += '<div class="question-divider"></div>';
+        const radioName = `d${dim.id}_q${qi + 1}`;
+        const opts = [
+          { value: 'sim',          label: 'Sim' },
+          { value: 'parcialmente', label: 'Parcialmente / Em andamento' },
+          { value: 'nao',          label: 'Não' },
+          { value: 'naosei',       label: 'Não sei / Não tenho essa informação' },
+          { value: 'naoaplicavel', label: 'Não aplicável' }
+        ].map(o =>
+          `<label class="option-label">
+            <input type="radio" name="${radioName}" value="${o.value}" onchange="onOptionChange(${screenNum})">
+            ${o.label}
+          </label>`
+        ).join('');
+
+        questionsHTML += `
+          <div class="question-block" id="qb-${radioName}">
+            <div class="question-text">${qi + 1}. ${q.t}</div>
+            <div class="options">${opts}</div>
+          </div>`;
+      });
+
+      const nextLabel = isLast ? 'Revisar e enviar →' : 'Avançar →';
+      const nextTarget = isLast ? 8 : screenNum + 1;
+
+      const div = document.createElement('div');
+      div.className = 'screen card';
+      div.id = `screen-${screenNum}`;
+      div.innerHTML = `
+        <div class="section-label">Dimensão ${dim.id} de 6</div>
+        <h2>${dim.nome}</h2>
+        <p class="section-intro">${dim.intro}</p>
+        ${questionsHTML}
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goTo(${screenNum - 1})">← Voltar</button>
+          <button class="btn btn-primary" id="btn-dim-${screenNum}" disabled onclick="goTo(${nextTarget})">${nextLabel}</button>
+          <span class="answer-hint" id="hint-dim-${screenNum}">0 de ${dim.perguntas.length} respondidas</span>
+        </div>`;
+      dimContainer.appendChild(div);
+    });
+
+    // ─── Login ───────────────────────────────────────────────
+    let progressoSalvo = null;
+
+    function doLogin() {
+      const usuario = document.getElementById('l-usuario').value.trim().toLowerCase();
+      const senha   = document.getElementById('l-senha').value;
+      if (USUARIOS[usuario] && USUARIOS[usuario].senha === senha) {
+        state.empresa_login = USUARIOS[usuario].empresa || usuario;
+
+        // v2.1: se houver progresso salvo, mostra banner — não restaura silenciosamente
+        progressoSalvo = restaurarProgresso();
+        const temRespostas = progressoSalvo &&
+          ((progressoSalvo.respostas && Object.keys(progressoSalvo.respostas).length > 0) ||
+           (progressoSalvo.dados && progressoSalvo.dados.nome));
+        document.getElementById('restore-banner').style.display = temRespostas ? 'block' : 'none';
+        goTo(0);
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+      }
+    }
+
+    function continuarSalvo() {
+      if (!progressoSalvo) return;
+      if (progressoSalvo.dados) {
+        if (progressoSalvo.dados.nome)  document.getElementById('f-nome').value  = progressoSalvo.dados.nome;
+        if (progressoSalvo.dados.cargo) document.getElementById('f-cargo').value = progressoSalvo.dados.cargo;
+        if (progressoSalvo.dados.email) document.getElementById('f-email').value = progressoSalvo.dados.email;
+      }
+      if (progressoSalvo.respostas) {
+        Object.entries(progressoSalvo.respostas).forEach(([name, value]) => {
+          const el = document.querySelector(`input[name="${name}"][value="${value}"]`);
+          if (el) el.checked = true;
+        });
+        for (let s = 2; s <= 7; s++) refreshDimValidation(s);
+      }
+      validateDados(true);
+      if (progressoSalvo.dados && progressoSalvo.dados.nome) {
+        state.dados = {
+          nome:    progressoSalvo.dados.nome,
+          cargo:   progressoSalvo.dados.cargo || '',
+          empresa: state.empresa_login,
+          email:   progressoSalvo.dados.email || ''
+        };
+      }
+      document.getElementById('restore-banner').style.display = 'none';
+      const destino = (progressoSalvo.screen && progressoSalvo.screen >= 1 && progressoSalvo.screen <= 7)
+        ? progressoSalvo.screen : 1;
+      goTo(destino);
+    }
+
+    function comecarDoZero() {
+      limparProgresso();
+      progressoSalvo = null;
+      // desmarca todas as respostas e limpa campos
+      document.querySelectorAll('input[type="radio"]:checked').forEach(el => { el.checked = false; });
+      ['f-nome', 'f-cargo', 'f-email'].forEach(id => { document.getElementById(id).value = ''; });
+      for (let s = 2; s <= 7; s++) refreshDimValidation(s);
+      validateDados(true);
+      document.getElementById('restore-banner').style.display = 'none';
+    }
+
+    function clearLoginError() {
+      document.getElementById('login-error').style.display = 'none';
+    }
+
+    // ─── Navigation ──────────────────────────────────────────
+    function goTo(n) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`screen-${n}`).classList.add('active');
+      currentScreen = n;
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (n === 1 && state.empresa_login) {
+        const el = document.getElementById('f-empresa');
+        if (el && !el.value) { el.value = state.empresa_login; validateDados(true); }
+      }
+      if (n === 8) renderResult();
+      salvarProgresso();
+    }
+
+    function updateProgress() {
+      const wrap = document.getElementById('progressWrap');
+      if (currentScreen === 0) { wrap.style.display = 'none'; return; }
+      wrap.style.display = 'block';
+      const step = currentScreen;   // 1..8
+      const total = 8;
+      document.getElementById('progressLabel').textContent = `Etapa ${step} de ${total}`;
+      document.getElementById('progressFill').style.width = `${(step / total) * 100}%`;
+    }
+
+    // ─── Dados validation ────────────────────────────────────
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    function validateDados(silencioso) {
+      const nome    = document.getElementById('f-nome').value.trim();
+      const cargo   = document.getElementById('f-cargo').value.trim();
+      const empresa = document.getElementById('f-empresa').value.trim();
+      const email   = document.getElementById('f-email').value.trim();
+
+      const emailOk = EMAIL_RE.test(email);
+      const emailErrEl = document.getElementById('f-email-error');
+      // só mostra erro se o campo tem conteúdo e está inválido
+      emailErrEl.style.display = (!silencioso && email !== '' && !emailOk) ? 'block' : 'none';
+
+      document.getElementById('btn-dados').disabled =
+        !(nome !== '' && cargo !== '' && empresa !== '' && emailOk);
+      salvarProgresso();
+    }
+
+    function saveDados() {
+      state.dados = {
+        nome:    document.getElementById('f-nome').value.trim(),
+        cargo:   document.getElementById('f-cargo').value.trim(),
+        empresa: document.getElementById('f-empresa').value.trim(),
+        email:   document.getElementById('f-email').value.trim()
+      };
+      goTo(2);
+    }
+
+    // ─── Dimension validation ────────────────────────────────
+    function refreshDimValidation(screenNum) {
+      const dimId = screenNum - 1;
+      const dim = DIMENSIONS[dimId - 1];
+      let answered = 0;
+      dim.perguntas.forEach((_, qi) => {
+        const name = `d${dimId}_q${qi + 1}`;
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        const block = document.getElementById(`qb-${name}`);
+        if (checked) {
+          answered++;
+          if (block) block.classList.remove('pendente');
+        }
+      });
+      const total = dim.perguntas.length;
+      const hint = document.getElementById(`hint-dim-${screenNum}`);
+      if (hint) hint.textContent = `${answered} de ${total} respondidas`;
+      document.getElementById(`btn-dim-${screenNum}`).disabled = answered !== total;
+      return answered === total;
+    }
+
+    function onOptionChange(screenNum) {
+      refreshDimValidation(screenNum);
+      salvarProgresso();
+    }
+
+    // ─── Scoring ─────────────────────────────────────────────
+    // v2: degrau por percentual do máximo possível, excluindo "Não aplicável"
+    function getDegrauPorPct(pct) {
+      if (pct <= 0.125) return { d: 'D0', estagio: ESTAGIO_NOMES[0] };
+      if (pct <= 0.375) return { d: 'D1', estagio: ESTAGIO_NOMES[1] };
+      if (pct <= 0.625) return { d: 'D2', estagio: ESTAGIO_NOMES[2] };
+      if (pct <= 0.75)  return { d: 'D3', estagio: ESTAGIO_NOMES[3] };
+      if (pct <= 0.875) return { d: 'D4', estagio: ESTAGIO_NOMES[4] };
+      return                   { d: 'D5', estagio: ESTAGIO_NOMES[5] };
+    }
+
+    function calcScores() {
+      return DIMENSIONS.map(dim => {
+        let pts = 0;
+        let validas = 0;
+        let naoSei = 0;
+        let temNaoAplicavel = false;
+
+        dim.perguntas.forEach((q, qi) => {
+          const el = document.querySelector(`input[name="d${dim.id}_q${qi + 1}"]:checked`);
+          if (!el) return;
+          if (el.value === 'naoaplicavel') {
+            temNaoAplicavel = true;
+            return; // v2: N/A não entra no denominador
+          }
+          validas++;
+          if (el.value === 'naosei') naoSei++;
+          const tabela = q.r ? SCORE_PTS_REVERSO : SCORE_PTS;
+          pts += (tabela[el.value] || 0);
+        });
+
+        if (validas === 0) {
+          return { id: dim.id, nome: dim.nome, pts: 0, validas: 0, naoSei: 0,
+                   d: '—', dNum: null, estagio: 'NÃO APLICÁVEL', temNaoAplicavel: true };
+        }
+
+        const pct = pts / (2 * validas);
+        const { d, estagio } = getDegrauPorPct(pct);
+        return { id: dim.id, nome: dim.nome, pts, validas, naoSei,
+                 d, dNum: parseInt(d[1]), estagio, temNaoAplicavel };
+      });
+    }
+
+    // v2: predominante = mediana (inferior) dos degraus válidos
+    function calcPredominante(scores) {
+      const nums = scores.filter(s => s.dNum !== null).map(s => s.dNum).sort((a, b) => a - b);
+      if (nums.length === 0) return 0;
+      const mid = Math.floor((nums.length - 1) / 2);
+      return nums[mid];
+    }
+
+    // v2: trilha cruza predominante com a Dimensão 3 (Risco Jurídico)
+    function calcTrilha(predominantNum, scores) {
+      const dim3 = scores.find(s => s.id === 3);
+      if (dim3 && dim3.dNum !== null && dim3.dNum <= 1 && predominantNum >= 2) {
+        return 'Estruturação & Governança — prioridade Risco Jurídico';
+      }
+      return TRILHAS[predominantNum];
+    }
+
+    // ─── Result rendering ────────────────────────────────────
+    function renderResult() {
+      const btnEnviar = document.getElementById('btn-enviar');
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'ENVIAR RESPOSTAS';
+      document.getElementById('send-status').textContent = '';
+      document.getElementById('send-status').className = 'send-status';
+      document.getElementById('res-empresa').textContent = state.dados.empresa || state.empresa_login || '';
+    }
+
+    // ─── Base64 UTF-8 (v2: TextEncoder no lugar de unescape) ─
+    function b64utf8(str) {
+      const bytes = new TextEncoder().encode(str);
+      let bin = '';
+      bytes.forEach(b => { bin += String.fromCharCode(b); });
+      return btoa(bin);
+    }
+
+    // ─── Email sending ───────────────────────────────────────
+    function enviarEmail() {
+      const btn    = document.getElementById('btn-enviar');
+      const status = document.getElementById('send-status');
+      btn.disabled = true;
+      btn.textContent = 'Enviando…';
+      status.textContent = '';
+      status.className = 'send-status';
+
+      const scores = calcScores();
+      const predominantNum = calcPredominante(scores);
+      const validScores = scores.filter(s => s.dNum !== null);
+      const gap = validScores.length
+        ? validScores.reduce((min, s) => (s.pts / (2 * s.validas)) < (min.pts / (2 * min.validas)) ? s : min, validScores[0])
+        : scores[0];
+      const trilha = calcTrilha(predominantNum, scores);
+      const scoreTotal = scores.reduce((sum, s) => sum + s.pts, 0);
+
+      // Alertas de visibilidade (2+ "não sei" na dimensão)
+      const alertasVisibilidade = scores
+        .filter(s => s.naoSei >= 2)
+        .map(s => `${s.nome} (${s.naoSei} respostas "não sei")`);
+
+      const RESP_MAP = { sim: 'Sim', parcialmente: 'Parcialmente', nao: 'Não', naosei: 'Não sei', naoaplicavel: 'Não aplicável' };
+
+      const diagData = {
+        nome:    state.dados.nome,
+        cargo:   state.dados.cargo,
+        empresa: state.dados.empresa,
+        email:   state.dados.email,
+        dt:      new Date().toLocaleString('pt-BR'),
+        scores:  scores.map(s => ({ id: s.id, nome: s.nome, pts: s.pts, d: s.d, estagio: s.estagio, temNaoAplicavel: s.temNaoAplicavel })),
+        respostas: DIMENSIONS.map(dim => ({
+          nome: dim.nome,
+          perguntas: dim.perguntas.map((q, qi) => {
+            const el = document.querySelector(`input[name="d${dim.id}_q${qi + 1}"]:checked`);
+            return { texto: q.t, resposta: el ? (RESP_MAP[el.value] || el.value) : 'Não respondida' };
+          })
+        })),
+        predominante: 'D' + predominantNum + ' — ' + ESTAGIO_NOMES[predominantNum],
+        gap:     gap.nome + ' (' + gap.d + ')',
+        trilha:  trilha,
+        score_total: scoreTotal
+      };
+      const encoded = b64utf8(JSON.stringify(diagData));
+      const linkDiagnostico = `https://thuckgoes-cmyk.github.io/vmb-triagem-ia/email-diagnostico.html?d=${encoded}`;
+
+      // Bloco de respostas detalhadas
+      let respostasTexto = '==================================\nRESPOSTAS POR PERGUNTA\n==================================';
+      let pNum = 1;
+      DIMENSIONS.forEach(dim => {
+        respostasTexto += `\n\nDIMENSÃO ${dim.id} — ${dim.nome.toUpperCase()}\n`;
+        dim.perguntas.forEach((q, qi) => {
+          const el = document.querySelector(`input[name="d${dim.id}_q${qi + 1}"]:checked`);
+          const resp = el ? (RESP_MAP[el.value] || el.value) : 'Não respondida';
+          const marcaReversa = q.r ? ' [pergunta de risco — pontuação invertida]' : '';
+          respostasTexto += `P${pNum}. ${q.t}${marcaReversa}\nResposta: ${resp}\n`;
+          pNum++;
+        });
+      });
+
+      if (alertasVisibilidade.length) {
+        respostasTexto += '\n==================================\nALERTAS DE VISIBILIDADE\n==================================\n';
+        respostasTexto += 'Dimensões com 2+ respostas "não sei" — possível gap de visibilidade interna do respondente:\n';
+        alertasVisibilidade.forEach(a => { respostasTexto += `- ${a}\n`; });
+      }
+      respostasTexto += '\n==================================';
+
+      const params = {
+        nome:    state.dados.nome,
+        cargo:   state.dados.cargo,
+        empresa: state.dados.empresa,
+        email:   state.dados.email,
+
+        dim1_degrau: scores[0].d, dim1_score: scores[0].dNum === null ? 'N/A' : scores[0].pts,
+        dim2_degrau: scores[1].d, dim2_score: scores[1].dNum === null ? 'N/A' : scores[1].pts,
+        dim3_degrau: scores[2].d, dim3_score: scores[2].dNum === null ? 'N/A' : scores[2].pts,
+        dim4_degrau: scores[3].d, dim4_score: scores[3].dNum === null ? 'N/A' : scores[3].pts,
+        dim5_degrau: scores[4].d, dim5_score: scores[4].dNum === null ? 'N/A' : scores[4].pts,
+        dim6_degrau: scores[5].d, dim6_score: scores[5].dNum === null ? 'N/A' : scores[5].pts,
+
+        predominante: 'D' + predominantNum + ' — ' + ESTAGIO_NOMES[predominantNum],
+        gap:          gap.nome + ' (' + gap.d + ')',
+        trilha:       trilha,
+        score_total:  scoreTotal,
+        respostas_detalhadas: respostasTexto,
+        link_diagnostico: linkDiagnostico
+      };
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params)
+        .then(() => {
+          limparProgresso(); // v2: limpa rascunho local após envio
+          document.getElementById('screen-8').innerHTML = `
+            <div style="text-align:center;padding:32px 0 16px">
+              <div style="width:72px;height:72px;border-radius:50%;background:#FEF0E6;display:inline-flex;align-items:center;justify-content:center;margin-bottom:28px">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 13l4 4L19 7" stroke="#FC7E2F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#3C3935;margin-bottom:14px">Respostas enviadas com sucesso</h2>
+              <p style="font-size:15px;color:#5C5854;line-height:1.75;max-width:420px;margin:0 auto 28px">A equipe VMB Jurídica recebeu seu diagnóstico e entrará em contato em breve.</p>
+            </div>
+            <div style="border-top:1px solid #E8E3DC;padding-top:24px;font-size:13px;color:#6F6963;line-height:1.75;text-align:left">
+              <p style="margin-bottom:12px">As informações compartilhadas neste questionário são estritamente confidenciais e serão utilizadas exclusivamente pela equipe VMB Jurídica para fins de diagnóstico e assessoria.</p>
+              <p style="margin-bottom:12px">Nenhuma informação será compartilhada com terceiros sem sua autorização expressa.</p>
+              <p style="margin:0">Em caso de dúvidas, entre em contato:
+                <a href="mailto:pedro@vmbjuridica.com" style="color:#C25A12;text-decoration:none">pedro@vmbjuridica.com</a>
+              </p>
+            </div>`;
+        })
+        .catch(err => {
+          btn.disabled = false;
+          btn.textContent = 'ENVIAR RESPOSTAS';
+          status.textContent = 'Erro ao enviar. Verifique sua conexão e tente novamente. Suas respostas continuam salvas neste navegador.';
+          status.className = 'send-status error';
+          console.error('EmailJS error:', err);
+        });
+    }
+  </script>
+</body>
+</html>
